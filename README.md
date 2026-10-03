@@ -1,71 +1,162 @@
 # Viruzz
 
-![Theme screenshot](https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/preview.png)
+A dark, minimal Spicetify theme inspired by **[viruzz.xyz](https://viruzz.xyz)** — built around transparent glass-like frames, spectral blue accents, and an interactive animated background.
 
-A dark minimal Spicetify theme matching [viruzz.xyz](https://viruzz.xyz).
-
-![Spicetify theme](https://img.shields.io/badge/spicetify-theme-8b9aed)
+<p align="center">
+  <img src="https://img.shields.io/badge/Spicetify-Theme-8b9aed?style=flat-square" alt="Spicetify Theme">
+  <img src="https://img.shields.io/github/license/xBoredx/Spicetify-Viruzz?style=flat-square" alt="License">
+</p>
 
 ## Preview
 
-Dark `#111` surfaces with a spectral blue (`#8b9aed`) accent. Every section (top bar, library, main view, right sidebar, player) is its own transparent frame with a thin glowing outline. Behind them sits an interactive dot lattice that links up around your cursor, ripples when you click, and drifts as you scroll, plus slowly floating circles, squares and hexagons. Spotify's cover-art tint on playlists, albums and the home page is removed, and the scrollbar is a thin glowing rail.
+<table>
+  <tr>
+    <td width="50%">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview1.png" alt="Viruzz Preview 1">
+    </td>
+    <td width="50%">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview2.png" alt="Viruzz Preview 2">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview3.png" alt="Viruzz Preview 3">
+    </td>
+    <td width="50%">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview4.png" alt="Viruzz Preview 4">
+    </td>
+  </tr>
+</table>
 
-## Install
+## ✦ Features
+
+* **Dark minimal UI** built around `#111111` surfaces
+* **Spectral blue** `#8b9aed` accent throughout the interface
+* Transparent framed sections with subtle glowing outlines
+* Interactive animated **dot lattice** background
+* Cursor-reactive connections and click ripples
+* Slowly floating circles, squares, and hexagons
+* Spotify's automatic cover-art color tint removed
+* Thin glowing scrollbar
+* Custom styling across the top bar, library, main view, sidebar, and player
+* Lightweight and designed to stay visually clean
+
+## Installation
 
 ### Marketplace
 
-Open Marketplace, find **Viruzz** in the Themes tab and click **Install**.
+Open **Marketplace → Themes**, search for **Viruzz**, and click **Install**.
 
-### Manual install
+### Manual
 
-1. Copy `user.css`, `color.ini` and `theme.js` into your Spicetify Themes folder:
+Copy the following files into your Spicetify Themes directory:
 
-    | OS            | Path                                    |
-    | ------------- | --------------------------------------- |
-    | Windows       | `%appdata%\spicetify\Themes\Viruzz\`    |
-    | Linux / macOS | `~/.config/spicetify/Themes/Viruzz/`    |
+| OS            | Path                                 |
+| ------------- | ------------------------------------ |
+| Windows       | `%appdata%\spicetify\Themes\Viruzz\` |
+| Linux / macOS | `~/.config/spicetify/Themes/Viruzz/` |
 
-2. Apply:
+The theme folder should contain:
 
+```text
+Viruzz/
+├── user.css
+├── color.ini
+└── theme.js
 ```
+
+Then run:
+
+```bash
 spicetify config current_theme Viruzz color_scheme Viruzz inject_css 1 replace_colors 1 inject_theme_js 1
 spicetify apply
 ```
 
-`inject_theme_js 1` is required. Without it `theme.js` never runs, so there is no background, no frames and no tint removal.
+> **Important:** `inject_theme_js 1` is required.
+>
+> Without it, `theme.js` will not run, meaning the animated background, frames, and tint removal will not be loaded.
 
 ## Colors
 
-| Variable          | Hex       | Use                           |
-| ----------------- | --------- | ----------------------------- |
-| `main`            | `#111111` | Background                    |
-| `surface`         | `#161616` | Cards                         |
-| `surface-2`       | `#1c1c1c` | Selected rows                 |
-| `text`            | `#e0eaf9` | Main text                     |
-| `subtext`         | `#a3aec2` | Secondary text                |
-| `spectral`        | `#8b9aed` | Accent, buttons, progress bar |
-| `button-disabled` | `#6b7386` | Faint text                    |
+| Variable          | Hex       | Usage                     |
+| ----------------- | --------- | ------------------------- |
+| `main`            | `#111111` | Background                |
+| `surface`         | `#161616` | Cards                     |
+| `surface-2`       | `#1c1c1c` | Selected rows             |
+| `text`            | `#e0eaf9` | Primary text              |
+| `subtext`         | `#a3aec2` | Secondary text            |
+| `spectral`        | `#8b9aed` | Accent, buttons, progress |
+| `button-disabled` | `#6b7386` | Disabled / faint text     |
 
 ## Customization
 
-At the top of `user.css`:
+The main customization variables are located at the top of `user.css`:
 
-| Variable        | Description                                  |
-| --------------- | -------------------------------------------- |
-| `--vz-frame`    | The outline drawn on every frame             |
-| `--vz-radius`   | Corner radius of the frames                  |
-| `--vz-spectral` | The accent color                             |
+| Variable        | Description            |
+| --------------- | ---------------------- |
+| `--vz-frame`    | Frame outline and glow |
+| `--vz-radius`   | Frame corner radius    |
+| `--vz-spectral` | Main accent color      |
+
+Change these values to quickly adjust the theme's overall appearance without modifying the rest of the stylesheet.
+
+## Background
+
+Viruzz uses a custom animated background instead of Spotify's default flat surfaces.
+
+The background features:
+
+* Connected dots that react to your cursor
+* Click-based ripple effects
+* Subtle movement while scrolling
+* Slowly drifting geometric shapes
+* Transparent UI frames layered above the animation
+
+The result is a subtle animated environment that stays behind Spotify's interface instead of competing with it.
 
 ## Troubleshooting
 
-If part of the app still has a solid or tinted background, open DevTools in Spotify (`Ctrl+Shift+I`, or run `spicetify enable-devtools` first), inspect the area, and open an issue with its class name.
+### Parts of Spotify still have a solid or tinted background
+
+Spotify's UI can change between versions, which may cause individual elements to retain their default styling.
+
+Open Spotify's DevTools:
+
+```text
+Ctrl + Shift + I
+```
+
+Or enable them through Spicetify:
+
+```bash
+spicetify enable-devtools
+```
+
+Inspect the affected element and check its class name. If you've found a Spotify component that isn't covered by the theme, feel free to open an issue.
+
+### The animated background isn't showing
+
+Make sure JavaScript injection is enabled:
+
+```bash
+spicetify config inject_theme_js 1
+spicetify apply
+```
 
 ## Uninstall
 
-```
+To restore Spotify's original Spicetify configuration:
+
+```bash
 spicetify restore
 ```
 
 ## Credits
 
-Made by boredq. Matches [viruzz.xyz](https://viruzz.xyz).
+Made by **boredq**.
+
+Inspired by and designed to match **[viruzz.xyz](https://viruzz.xyz)**.
+
+<p align="center">
+  <sub>Viruzz — a minimal Spicetify experience.</sub>
+</p>
