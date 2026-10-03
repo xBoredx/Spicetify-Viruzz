@@ -1,0 +1,353 @@
+/* viruzz theme for spicetify, made to match viruzz.xyz.
+   dark #111 base, the dot lattice background, drifting shapes, blue accents
+   and thin borders.
+
+   heads up: a few selectors below keep their capitals and underscores on purpose.
+   those are spotify's real class names and they have to match exactly. */
+
+/* this import has to be the very first rule or browsers quietly ignore it */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --vz-bg:           #111111;
+  --vz-surface:      #161616;
+  --vz-surface-2:    #1c1c1c;
+  --vz-text:         #e0eaf9;
+  --vz-text-muted:   #a3aec2;
+  --vz-text-faint:   #6b7386;
+  --vz-spectral:     #8b9aed;
+  --vz-spectral-dim: rgba(139, 154, 237, 0.35);
+  --vz-hairline:     rgba(224, 234, 249, 0.11);
+
+  /* the fading outline. three inset shadows stacked:
+     a blue line on the top and left edges, a very faint line on the bottom and
+     right, and a soft blue glow that melts inward so the edge fades out */
+  --vz-outline:
+    inset 1px 1px 0 0 rgba(139, 154, 237, 0.32),
+    inset -1px -1px 0 0 rgba(224, 234, 249, 0.06),
+    inset 0 0 36px -18px rgba(139, 154, 237, 0.28);
+
+  /* the site's fonts. some spotify builds read these, others just ignore them */
+  --encore-body-font-stack:  'inter', system-ui, sans-serif;
+  --encore-title-font-stack: 'space grotesk', system-ui, sans-serif;
+}
+
+/* ---------- layer 0: let the canvas show through ----------
+   theme.js puts a fixed canvas behind the whole app. spotify paints a bunch of
+   full size solid containers on top of it, so every one of them has to be
+   see through or the dots never show up. */
+
+html { background: var(--vz-bg) !important; }
+body { background: transparent !important; }
+
+#main,
+.Root,
+.Root__top-container,
+.Root__globalNav,
+.Root__main-view,
+.Root__right-sidebar,
+.main-view-container,
+.main-view-container__scroll-node,
+.main-view-container__scroll-node-child,
+.main-view-container__scroll-node-child-spacer,
+.main-home-content,
+.main-yourLibraryX-libraryContainer,
+.main-yourLibraryX-library,
+#Desktop_LeftSidebar_Id,
+/* safety net: theme.js tags any big solid panel it finds that isn't listed above */
+[data-vz-clear] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* ---------- layer 1: drifting shapes ----------
+   copied from the site's shape field. theme.js builds 14 random circles,
+   squares and hexagons and these rules style them. */
+
+.vz-shape-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.vz-shape {
+  position: absolute;
+  border: 1px solid var(--vz-hairline);
+  color: var(--vz-hairline);
+  will-change: transform, filter;
+}
+.vz-shape-circle   { border-radius: 50%; }
+.vz-shape-spectral { border-color: var(--vz-spectral-dim); color: var(--vz-spectral-dim); }
+.vz-shape-hex      { border: none; }
+.vz-shape-hex svg  { filter: none; }
+
+@keyframes vz-shape-drift-a {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  22%  { transform: translate(86px,-58px) rotate(70deg); }
+  48%  { transform: translate(24px,-132px) rotate(150deg); }
+  74%  { transform: translate(-64px,-40px) rotate(230deg); }
+  100% { transform: translate(0,0) rotate(320deg); }
+}
+@keyframes vz-shape-drift-b {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  28%  { transform: translate(-98px,44px) rotate(-60deg); }
+  58%  { transform: translate(-38px,118px) rotate(-140deg); }
+  100% { transform: translate(0,0) rotate(-260deg); }
+}
+@keyframes vz-shape-drift-c {
+  0%, 100% { transform: translate(0,0) scale(1) rotate(0deg); }
+  50%      { transform: translate(60px,60px) scale(1.35) rotate(60deg); }
+}
+@keyframes vz-shape-drift-d {
+  0%, 100% { transform: translatey(0) rotate(0deg); }
+  50%      { transform: translatey(-128px) rotate(48deg); }
+}
+@keyframes vz-shape-drift-e {
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); }
+  35%  { transform: translate(70px,90px) rotate(-90deg) scale(1.2); }
+  70%  { transform: translate(-50px,60px) rotate(-180deg) scale(.85); }
+  100% { transform: translate(0,0) rotate(-280deg) scale(1); }
+}
+@keyframes vz-shape-drift-f {
+  0%, 100% { transform: translatex(0) rotate(0deg); }
+  50%      { transform: translatex(112px) rotate(-40deg); }
+}
+/* uneven keyframe spacing on purpose, so it flickers instead of breathing */
+@keyframes vz-shape-glow-flicker {
+  0%   { filter: drop-shadow(0 0 0 transparent); }
+  8%   { filter: drop-shadow(0 0 7px var(--glow-color)); }
+  15%  { filter: drop-shadow(0 0 1px transparent); }
+  32%  { filter: drop-shadow(0 0 10px var(--glow-color)); }
+  46%  { filter: drop-shadow(0 0 2px transparent); }
+  60%  { filter: drop-shadow(0 0 12px var(--glow-color)); }
+  74%  { filter: drop-shadow(0 0 0 transparent); }
+  88%  { filter: drop-shadow(0 0 8px var(--glow-color)); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
+
+/* ---------- panels ----------
+   frosted like the site's header, but light enough that the dots and the
+   cursor lines still show through */
+
+.Root__nav-bar,
+.sidebar-nav,
+[class*="LeftSidebar"] {
+  background: rgba(13, 13, 13, 0.55) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--vz-outline) !important;
+}
+
+.Root__now-playing-bar {
+  background: rgba(10, 10, 10, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--vz-outline) !important;
+}
+
+/* the main view and the right sidebar get the same fading outline */
+.Root__main-view,
+.Root__right-sidebar {
+  border-radius: 8px !important;
+  box-shadow: var(--vz-outline) !important;
+}
+
+.Root__top-bar header,
+.Root__top-bar {
+  background: rgba(15, 15, 15, 0.7) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  border-bottom: 1px solid var(--vz-hairline) !important;
+}
+
+/* the page you're on in the sidebar, styled like the site's active nav link */
+.main-navBar-navBarLink-active,
+.main-navBar-navBarLink[aria-current="page"],
+a[aria-current="page"] {
+  color: var(--vz-spectral) !important;
+  background: color-mix(in srgb, var(--vz-spectral) 12%, transparent) !important;
+  box-shadow: inset 3px 0 0 0 var(--vz-spectral) !important;
+}
+
+/* ---------- cards ---------- */
+
+@keyframes vz-card-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 154, 237, 0); }
+  50%      { box-shadow: 0 0 24px 0 rgba(139, 154, 237, 0.08); }
+}
+
+.main-card-card {
+  background: var(--vz-surface) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  transition: border-color .3s ease, box-shadow .3s ease !important;
+  animation: vz-card-glow 6s ease-in-out 1.4s infinite !important;
+}
+.main-card-card:hover {
+  border-color: rgba(139, 154, 237, .45) !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35), 0 0 20px -6px var(--vz-spectral-dim) !important;
+  animation: none !important;
+}
+.main-card-PlayButtonContainer {
+  background: var(--vz-spectral) !important;
+  box-shadow: 0 8px 24px rgba(139, 154, 237, .4) !important;
+}
+
+/* ---------- track list ---------- */
+
+.main-trackList-trackListRow {
+  border-left: 2px solid transparent;
+  transition: background-color .18s ease, border-color .2s cubic-bezier(.2,.8,.2,1) !important;
+}
+.main-trackList-trackListRow:hover {
+  background: var(--vz-surface) !important;
+  border-left-color: var(--vz-spectral) !important;
+}
+.main-trackList-trackListRow[aria-selected="true"] {
+  background: var(--vz-surface-2) !important;
+}
+
+/* the playing indicator is blue instead of spotify green */
+.main-trackList-playingIcon,
+[data-testid="playback-widget"] svg {
+  color: var(--vz-spectral) !important;
+  fill: var(--vz-spectral) !important;
+}
+
+/* ---------- player ----------
+   the progress bar uses the same gradient and glow as the site's */
+
+.playback-bar .progress-bar__fg,
+.playback-progressbar__fg,
+[data-testid="volume-bar"] .progress-bar__fg {
+  background: linear-gradient(90deg, var(--vz-spectral-dim), var(--vz-spectral)) !important;
+  box-shadow: 0 0 10px var(--vz-spectral-dim) !important;
+}
+.progress-bar__slider-handle,
+.playback-progressbar__seeker-thumb {
+  background: var(--spice-text) !important;
+  box-shadow: 0 0 10px var(--vz-spectral-dim) !important;
+}
+
+[data-testid="heart-button"][aria-checked="true"] svg,
+.control-button--liked svg,
+[aria-label="remove from your library" i] svg {
+  fill: var(--vz-spectral) !important;
+  filter: drop-shadow(0 0 6px var(--vz-spectral-dim)) !important;
+}
+
+[data-testid="context-item-info-title"] a:hover,
+.main-trackInfo-name a:hover {
+  color: var(--spice-text) !important;
+  text-shadow: 0 0 14px var(--vz-spectral-dim) !important;
+}
+
+/* a slow scan line over the now playing artwork, like the site's mascot */
+@keyframes vz-scan-sweep { 0% { top: -40%; } 100% { top: 100%; } }
+
+[data-testid="CoverSlotExpanded__container"] { position: relative; overflow: hidden; }
+[data-testid="CoverSlotExpanded__container"]::after {
+  content: '';
+  position: absolute; left: 0; right: 0; top: -40%; height: 40%;
+  background: linear-gradient(to bottom, rgba(139,154,237,0), rgba(139,154,237,.05), rgba(139,154,237,0));
+  animation: vz-scan-sweep 6s linear infinite;
+  pointer-events: none; z-index: 1;
+}
+
+/* ---------- inputs, menus and popups ---------- */
+
+.x-searchInput-searchInputInput,
+input[type="text"],
+input[type="search"] {
+  background: var(--vz-surface) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  color: var(--spice-text) !important;
+  transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+.x-searchInput-searchInputInput:focus,
+input[type="text"]:focus,
+input[type="search"]:focus {
+  border-color: rgba(139, 154, 237, .45) !important;
+  box-shadow: 0 0 0 3px var(--vz-spectral-dim) !important;
+  outline: none !important;
+}
+input::placeholder { color: var(--vz-text-faint) !important; }
+
+.main-contextMenu-menu,
+.GlueDropdown {
+  background: rgba(22, 22, 22, 0.92) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow:
+    0 16px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3),
+    inset 1px 1px 0 0 rgba(139, 154, 237, 0.28),
+    inset 0 0 30px -18px rgba(139, 154, 237, 0.25) !important;
+}
+.main-contextMenu-menuItem:hover,
+.GlueDropdown-menuItem:hover {
+  background: var(--vz-surface-2) !important;
+  color: var(--spice-text) !important;
+}
+
+.GenericModal__overlay {
+  background: rgba(11, 11, 11, .75) !important;
+  backdrop-filter: blur(8px) !important;
+}
+.GenericModal__wrapper {
+  background: var(--vz-surface) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    inset 1px 1px 0 0 rgba(139, 154, 237, 0.28),
+    inset 0 0 30px -18px rgba(139, 154, 237, 0.25) !important;
+}
+
+/* ---------- scrollbars, focus rings and type ---------- */
+
+* { scrollbar-width: thin; scrollbar-color: var(--vz-hairline) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--vz-hairline); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--vz-spectral-dim); }
+::-webkit-scrollbar-corner { background: transparent; }
+
+:focus-visible {
+  outline: 2px solid var(--spice-text) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* small numbers and times use the mono font, same as the site */
+.main-trackList-rowSectionIndex,
+.main-trackList-rowDuration,
+time,
+[data-testid="tracklist-duration"] {
+  font-family: 'jetbrains mono', 'sfmono-regular', consolas, monospace !important;
+  font-size: .82em !important;
+  color: var(--vz-text-faint) !important;
+}
+
+h1, h2, h3,
+.main-entityHeader-title,
+[data-testid="entityTitle"],
+.main-shelf-title {
+  font-family: 'space grotesk', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -.005em !important;
+}
+
+.main-entityHeader-backgroundColor { opacity: .4 !important; }
+.main-entityHeader-shadow,
+[data-testid="playlist-page"] .main-entityHeader-shadow {
+  background: linear-gradient(to bottom, transparent, #111111) !important;
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition-duration: .01ms !important; }
+  .vz-shape-field { display: none !important; }
+}
