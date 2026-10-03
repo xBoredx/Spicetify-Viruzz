@@ -1,23 +1,15 @@
-/* viruzz theme for spicetify, made to match viruzz.xyz.
-   dark #111 base, the dot lattice background, drifting shapes, blue accents
-   and thin borders.
-
-   heads up: a few selectors below keep their capitals and underscores on purpose.
-   those are spotify's real class names and they have to match exactly. */
-
-/* this import has to be the very first rule or browsers quietly ignore it */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --vz-bg:           #111111;
-  --vz-surface:      #161616;
-  --vz-surface-2:    #1c1c1c;
-  --vz-text:         #e0eaf9;
-  --vz-text-muted:   #a3aec2;
-  --vz-text-faint:   #6b7386;
-  --vz-spectral:     #8b9aed;
+  --vz-bg: #111111;
+  --vz-surface: #161616;
+  --vz-surface-2: #1c1c1c;
+  --vz-text: #e0eaf9;
+  --vz-text-muted: #a3aec2;
+  --vz-text-faint: #6b7386;
+  --vz-spectral: #8b9aed;
   --vz-spectral-dim: rgba(139, 154, 237, 0.35);
-  --vz-hairline:     rgba(224, 234, 249, 0.11);
+  --vz-hairline: rgba(224, 234, 249, 0.11);
 
   /* the fading outline. three inset shadows stacked:
      a blue line on the top and left edges, a very faint line on the bottom and
@@ -31,11 +23,6 @@
   --encore-body-font-stack:  'inter', system-ui, sans-serif;
   --encore-title-font-stack: 'space grotesk', system-ui, sans-serif;
 }
-
-/* ---------- layer 0: let the canvas show through ----------
-   theme.js puts a fixed canvas behind the whole app. spotify paints a bunch of
-   full size solid containers on top of it, so every one of them has to be
-   see through or the dots never show up. */
 
 html { background: var(--vz-bg) !important; }
 body { background: transparent !important; }
@@ -59,10 +46,6 @@ body { background: transparent !important; }
   background: transparent !important;
   background-color: transparent !important;
 }
-
-/* ---------- layer 1: drifting shapes ----------
-   copied from the site's shape field. theme.js builds 14 random circles,
-   squares and hexagons and these rules style them. */
 
 .vz-shape-field {
   position: fixed;
@@ -125,10 +108,6 @@ body { background: transparent !important; }
   88%  { filter: drop-shadow(0 0 8px var(--glow-color)); }
   100% { filter: drop-shadow(0 0 0 transparent); }
 }
-
-/* ---------- panels ----------
-   frosted like the site's header, but light enough that the dots and the
-   cursor lines still show through */
 
 .Root__nav-bar,
 .sidebar-nav,
