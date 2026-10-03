@@ -7,5 +7,5 @@
   "readme": "README.md",
   "authors": [{ "name": "boredq", "url": "https://github.com/xBoredx" }],
   "tags": ["dark", "minimal", "animated", "spectral"],
-  "include": ["https://raw.githubusercontent.com/xBoredx/main/theme.js"]
+  "include": ["https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/theme.js"]
 }
