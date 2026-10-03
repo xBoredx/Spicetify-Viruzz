@@ -12,18 +12,18 @@ A dark, minimal Spicetify theme inspired by **[viruzz.xyz](https://viruzz.xyz)**
 <table>
   <tr>
     <td width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview1.png" alt="Viruzz Preview 1">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview_1.png" alt="Viruzz Preview 1">
     </td>
     <td width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview2.png" alt="Viruzz Preview 2">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview_2.png" alt="Viruzz Preview 2">
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview3.png" alt="Viruzz Preview 3">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview_3.png" alt="Viruzz Preview 3">
     </td>
     <td width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview4.png" alt="Viruzz Preview 4">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/preview_4.png" alt="Viruzz Preview 4">
     </td>
   </tr>
 </table>
