@@ -3,7 +3,7 @@
   "description": "Minimal dark theme matching viruzz.xyz. Dot lattice background, drifting shapes, spectral (#8b9aed) glow accents.",
   "usercss": "user.css",
   "schemes": "color.ini",
-  "preview": "/screenshots/preview1.png",
+  "preview": "screenshots/preview_4.png",
   "readme": "README.md",
   "authors": [{ "name": "boredq", "url": "https://github.com/xBoredx" }],
   "tags": ["dark", "minimal", "animated", "spectral"],
