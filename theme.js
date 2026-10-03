@@ -1,15 +1,4 @@
 (function () {
-  // viruzz background for spicetify.
-  // ported straight from the bg-canvas and shape-field scripts on viruzz.xyz.
-  //
-  // what's different from the website:
-  //   - the canvas and the shape layer get made here instead of living in the html
-  //   - scroll parallax listens on the capture phase, because spotify scrolls
-  //     inner containers and never the window itself
-  //   - a "sweep" finds big opaque spotify panels sitting on top of the canvas and
-  //     clears them, so the dots stay visible even if spotify renames its classes
-  //     (the matching css rule is the data-vz-clear one in user.css)
-
   if (window.viruzzloaded) return;
   window.viruzzloaded = true;
 
@@ -18,9 +7,7 @@
     if (document.querySelector('#viruzz-bg-canvas')) return;
 
     const reducemotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ismobile = false; // desktop app, kept so the numbers match the site
-
-    // ---------- 1. the dot lattice canvas ----------
+    const ismobile = false;
 
     const canvas = document.createElement('canvas');
     canvas.id = 'viruzz-bg-canvas';
@@ -54,15 +41,15 @@
     const ripples = [];
     const ripplems = 1150;
     const ripplereach = ismobile ? 320 : 460;
-    const rippleband = 64;   // how wide the moving crest is
-    const ripplepush = 13;   // how far a dot gets shoved outward at the crest
+    const rippleband = 64; // how wide the moving crest is
+    const ripplepush = 13; // how far a dot gets shoved outward at the crest
     const maxripples = 4;
 
     // the lattice drifts against the page while you scroll, which reads as depth
     const parallaxrate = 0.055;
     let parallax = 0;
     let parallaxgoal = 0;
-    let wraph = 0;           // lattice height, so it can wrap around without a seam
+    let wraph = 0; // lattice height, so it can wrap around without a seam
 
     const rand = (min, max) => Math.random() * (max - min) + min;
 
@@ -76,7 +63,6 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const cols = Math.ceil(w / spacing) + 1;
-      // two extra rows so the wrap seam always stays below the fold
       const rowcount = Math.ceil(h / spacing) + 2;
       wraph = rowcount * spacing;
       dots = [];
@@ -101,7 +87,7 @@
         const a = rings[k], b = rings[k + 1];
         if (t >= a.r && t <= b.r) {
           const local = (t - a.r) / (b.r - a.r || 1);
-          const eased = local * local * (3 - 2 * local); // smoothstep
+          const eased = local * local * (3 - 2 * local);
           return a[key] + (b[key] - a[key]) * eased;
         }
       }
@@ -168,7 +154,6 @@
         }
       }
 
-      // the lines that follow the cursor around
       ctx.lineWidth = 1;
       if (mouse.active) {
         for (let ii = 0; ii < near.length; ii++) {
@@ -211,7 +196,6 @@
 
         ctx.beginPath();
         ctx.arc(d.x, d.y, radius, 0, Math.PI * 2);
-        // the ripple crest picks up the blue, everything else stays neutral
         ctx.fillStyle = glow > 0.04
           ? `rgba(${Math.round(224 - glow * 85)},${Math.round(234 - glow * 80)},249,${alpha})`
           : `rgba(224,234,249,${alpha})`;
@@ -233,15 +217,12 @@
 
     window.addEventListener('resize', resize);
 
-    // spotify scrolls inner containers, so listen on the capture phase and
-    // follow whichever big scroller (the main view) is moving
     document.addEventListener('scroll', (e) => {
       const t = e.target;
       if (!t || t === document) { parallaxgoal = window.scrollY * parallaxrate; return; }
       if (t.clientWidth > window.innerWidth * 0.4) parallaxgoal = (t.scrollTop || 0) * parallaxrate;
     }, { capture: true, passive: true });
 
-    // clicks on real controls shouldn't fire a ripple behind them
     window.addEventListener('pointerdown', (e) => {
       if (e.target && e.target.closest &&
           e.target.closest('a, button, input, select, textarea, code, [role="button"], [role="slider"]')) return;
@@ -255,8 +236,6 @@
 
     resize();
     if (reducemotion) draw(); else requestAnimationFrame(loop);
-
-    // ---------- 2. the drifting shapes ----------
 
     if (!reducemotion) {
       const istablet = window.innerWidth <= 900;
@@ -278,7 +257,6 @@
         el.style.top = spec.top + '%';
 
         const duration = rand(spec.durmin, spec.durmax);
-        // negative delay starts each shape mid cycle so the field never moves in sync
         const delay = -rand(0, duration);
         let animation = pick(drifts) + ' ' + duration.toFixed(1) + 's ease-in-out ' + delay.toFixed(1) + 's infinite';
 
@@ -316,11 +294,8 @@
           durmax: 41,
         }));
       }
-      // right after the canvas: same z-index, so dom order decides who is on top
       canvas.parentNode.insertBefore(field, canvas.nextSibling);
     }
-
-    // ---------- 3. the sweep: stop spotify's big panels from hiding the canvas ----------
 
     const clearattr = 'data-vz-clear';
     const skipselector = '#context-menu, [role="dialog"], [role="menu"], [role="listbox"], [aria-modal="true"],' +
@@ -349,8 +324,8 @@
           const box = el.getBoundingClientRect();
           if (box.height < vh * 0.5 || box.width * box.height < vw * vh * 0.12) continue;
           const style = getComputedStyle(el);
-          if (style.backgroundImage !== 'none') continue;     // leave gradients and artwork alone
-          if (alphaof(style.backgroundColor) < 0.97) continue; // leave on-purpose tints alone
+          if (style.backgroundImage !== 'none') continue;
+          if (alphaof(style.backgroundColor) < 0.97) continue;
           el.setAttribute(clearattr, '');
         }
       }
