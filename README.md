@@ -3,7 +3,7 @@
 A dark, minimal Spotify theme that matches [viruzz.xyz](https://viruzz.xyz). An interactive dot lattice and drifting shapes sit behind glass panels with soft spectral glows, and everything is customizable from a built-in settings panel.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/fullPreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view" width="100%">
+  <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/HomePreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view" width="100%">
 </p>
 
 <table>
@@ -13,7 +13,7 @@ A dark, minimal Spotify theme that matches [viruzz.xyz](https://viruzz.xyz). An 
       <sub><b>Settings panel</b></sub>
     </td>
     <td align="center" width="33%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/NoSideBarPreview.png" alt="Library and now playing collapsed into icon strips"><br>
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/NoSidebarPreview.png" alt="Library and now playing collapsed into icon strips"><br>
       <sub><b>Icon strips</b></sub>
     </td>
     <td align="center" width="33%">
