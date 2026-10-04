@@ -3,28 +3,28 @@
 A dark, minimal Spotify theme that matches [viruzz.xyz](https://viruzz.xyz). An interactive dot lattice and drifting shapes sit behind glass panels with soft spectral glows, and everything is customizable from a built-in settings panel.
 
 <p align="center">
-  <img src="https://github.com/xBoredx/Spicetify-Viruzz/blob/main/screenshots/fullPreview.png" alt="Viruzz Full Preview" width="100%">
+  <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/HomePreview.png" alt="Viruzz Full Preview" width="100%">
 </p>
 
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="https://github.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/HomePreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view"><br>
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/HomePreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view"><br>
       <sub><b>Home</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/SettingsPreview.png" alt="Viruzz settings panel with the accent color picker"><br>
-      <sub><b>Settings panel</b></sub>
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/SidebarPreview.png" alt="Both sidebars hidden with the arrows on the edges"><br>
+      <sub><b>Sidebars Preview</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/NoSidebarPreview.png" alt="Library and now playing collapsed into icon strips"><br>
-      <sub><b>Icon strips</b></sub>
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/NoSidebarPreview.png" alt="Library and now playing collapsed into icon strips"><br>
+      <sub><b>Hidden Sidebars Preview</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/SidebarPreview.png" alt="Both sidebars hidden with the arrows on the edges"><br>
-      <sub><b>Hidden sidebars</b></sub>
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/screenshots/SettingsPreview.png" alt="Viruzz settings panel with the accent color picker"><br>
+      <sub><b>Settings Preview</b></sub>
     </td>
   </tr>
 </table>
