@@ -9,7 +9,7 @@ A dark, minimal Spotify theme that matches [viruzz.xyz](https://viruzz.xyz). An 
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/HomePreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view"><br>
+      <img src="https://github.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/HomePreview.png" alt="Viruzz home view with glass panels, sidebars and the now playing view"><br>
       <sub><b>Home</b></sub>
     </td>
     <td align="center" width="50%">
