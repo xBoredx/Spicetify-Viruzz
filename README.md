@@ -8,15 +8,21 @@ A dark, minimal Spotify theme that matches [viruzz.xyz](https://viruzz.xyz). An 
 
 <table>
   <tr>
-    <td align="center" width="33%">
+    <td align="center" width="50%">
       <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/settings.png" alt="Viruzz settings panel with the accent color picker"><br>
       <sub><b>Settings panel</b></sub>
     </td>
-    <td align="center" width="33%">
+    <td align="center" width="50%">
+      <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/strip.png" alt="Library and now playing collapsed into icon strips"><br>
+      <sub><b>Icon strips</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
       <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/sidebars.png" alt="Both sidebars hidden with the arrows on the edges"><br>
       <sub><b>Hidden sidebars</b></sub>
     </td>
-    <td align="center" width="33%">
+    <td align="center" width="50%">
       <img src="https://raw.githubusercontent.com/xBoredx/Spicetify-Viruzz/main/Viruzz/screenshots/marketplace.png" alt="Spicetify Marketplace in the Viruzz theme"><br>
       <sub><b>Marketplace</b></sub>
     </td>
