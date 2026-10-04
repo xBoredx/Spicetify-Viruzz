@@ -1,0 +1,1116 @@
+/* viruzz theme for spicetify, matches viruzz.xyz */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* main colors and sizes, change stuff here */
+:root {
+  --vz-bg: #111111;
+  --vz-surface: #161616;
+  --vz-surface-2: #1c1c1c;
+  --vz-text: #e0eaf9;
+  --vz-text-muted: #a3aec2;
+  --vz-text-faint: #6b7386;
+  /* these get overwritten by the settings panel */
+  --vz-accent-rgb: 139, 154, 237;
+  --vz-glow: 1;
+  --vz-line: 1;
+  --vz-glass-tint: 0.62;
+  --vz-btn-size: 38px;
+  --vz-glass-blur: 14px;
+  --vz-spectral: rgb(var(--vz-accent-rgb));
+  --vz-spectral-dim: rgba(var(--vz-accent-rgb), calc(0.35 * var(--vz-glow)));
+  /* glass like the site's stat cards: dark tint with a soft light in the top left corner, blue outline */
+  --vz-glass-bg: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02) 45%, transparent 70%), rgba(20, 20, 22, var(--vz-glass-tint));
+  /* same glass for the big boxes, a bit lighter so the dots still show through */
+  --vz-panel-glass: radial-gradient(90% 70% at 0% 0%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 50%, transparent 75%), rgba(18, 18, 20, calc(var(--vz-glass-tint) * 0.7));
+  --vz-glass-border: rgba(var(--vz-accent-rgb), calc(0.32 * var(--vz-line)));
+  --vz-glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --vz-hairline: rgba(224, 234, 249, 0.11);
+  --vz-radius: 10px;
+  --vz-gap: 6px;
+  --vz-pad: 10px;
+
+  --vz-lib-left: 4px;
+  --vz-lib-right: 10px;
+
+  --vz-outline:
+    inset 1px 1px 0 0 rgba(var(--vz-accent-rgb), calc(0.32 * var(--vz-line))),
+    inset -1px -1px 0 0 rgba(224, 234, 249, 0.06),
+    inset 0 0 36px -18px rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-glow)));
+
+  --vz-frame:
+    inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.30 * var(--vz-line))),
+    inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow)));
+
+  --vz-hover-glow:
+    inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line))),
+    inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.35 * var(--vz-glow))),
+    0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.12 * var(--vz-line))),
+    0 0 24px -4px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow)));
+
+  --encore-body-font-stack: 'inter', system-ui, sans-serif;
+  --encore-title-font-stack: 'space grotesk', system-ui, sans-serif;
+}
+
+.encore-dark-theme,
+.encore-dark-theme--base,
+.encore-dark-theme .encore-base-set {
+  --background-tinted: rgba(224, 234, 249, 0.06) !important;
+
+  --background-base: transparent !important;
+  --background-highlight: transparent !important;
+  --background-press: transparent !important;
+  --background-tinted-base: transparent !important;
+  --background-tinted-highlight: transparent !important;
+  --background-tinted-press: transparent !important;
+}
+
+html { background: var(--vz-bg) !important; }
+body { background: transparent !important; }
+
+/* makes spotify's backgrounds see-through so the dots show */
+#main,
+.Root,
+.Root__top-container,
+.Root__globalNav,
+.Root__main-view,
+.Root__right-sidebar,
+.main-view-container,
+.main-view-container__scroll-node,
+.main-view-container__scroll-node > *,
+.main-shelf-shelf,
+.main-gridContainer-gridContainer,
+[data-testid="home-page"],
+[data-testid="grid-container"],
+.main-view-container__scroll-node-child,
+.main-view-container__scroll-node-child-spacer,
+.main-home-content,
+.main-yourLibraryX-libraryContainer,
+.main-yourLibraryX-library,
+#Desktop_LeftSidebar_Id,
+
+[data-vz-clear],
+[data-vz-panel] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* the floating shapes in the background */
+.vz-shape-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.vz-shape {
+  position: absolute;
+  border: 1px solid var(--vz-hairline);
+  color: var(--vz-hairline);
+  will-change: transform, filter;
+}
+.vz-shape-circle { border-radius: 50%; }
+.vz-shape-spectral { border-color: var(--vz-spectral-dim); color: var(--vz-spectral-dim); }
+.vz-shape-hex { border: none; }
+.vz-shape-hex svg { filter: none; }
+
+@keyframes vz-shape-drift-a {
+  0% { transform: translate(0,0) rotate(0deg); }
+  22% { transform: translate(86px,-58px) rotate(70deg); }
+  48% { transform: translate(24px,-132px) rotate(150deg); }
+  74% { transform: translate(-64px,-40px) rotate(230deg); }
+  100% { transform: translate(0,0) rotate(320deg); }
+}
+@keyframes vz-shape-drift-b {
+  0% { transform: translate(0,0) rotate(0deg); }
+  28% { transform: translate(-98px,44px) rotate(-60deg); }
+  58% { transform: translate(-38px,118px) rotate(-140deg); }
+  100% { transform: translate(0,0) rotate(-260deg); }
+}
+@keyframes vz-shape-drift-c {
+  0%, 100% { transform: translate(0,0) scale(1) rotate(0deg); }
+  50% { transform: translate(60px,60px) scale(1.35) rotate(60deg); }
+}
+@keyframes vz-shape-drift-d {
+  0%, 100% { transform: translatey(0) rotate(0deg); }
+  50% { transform: translatey(-128px) rotate(48deg); }
+}
+@keyframes vz-shape-drift-e {
+  0% { transform: translate(0,0) rotate(0deg) scale(1); }
+  35% { transform: translate(70px,90px) rotate(-90deg) scale(1.2); }
+  70% { transform: translate(-50px,60px) rotate(-180deg) scale(.85); }
+  100% { transform: translate(0,0) rotate(-280deg) scale(1); }
+}
+@keyframes vz-shape-drift-f {
+  0%, 100% { transform: translatex(0) rotate(0deg); }
+  50% { transform: translatex(112px) rotate(-40deg); }
+}
+
+@keyframes vz-shape-glow-flicker {
+  0% { filter: drop-shadow(0 0 0 transparent); }
+  8% { filter: drop-shadow(0 0 7px var(--glow-color)); }
+  15% { filter: drop-shadow(0 0 1px transparent); }
+  32% { filter: drop-shadow(0 0 10px var(--glow-color)); }
+  46% { filter: drop-shadow(0 0 2px transparent); }
+  60% { filter: drop-shadow(0 0 12px var(--glow-color)); }
+  74% { filter: drop-shadow(0 0 0 transparent); }
+  88% { filter: drop-shadow(0 0 8px var(--glow-color)); }
+  100% { filter: drop-shadow(0 0 0 transparent); }
+}
+
+.Root__nav-bar,
+.Root__main-view,
+.Root__right-sidebar {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.sidebar-nav,
+[class*="LeftSidebar"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* the sidebars and main view boxes */
+[data-vz-panel] {
+  position: relative !important;
+  box-sizing: border-box !important;
+
+  max-width: 100% !important;
+  max-height: 100% !important;
+  padding: var(--vz-pad) !important;
+
+  border: none !important;
+  border-radius: var(--vz-radius) !important;
+  background: var(--vz-panel-glass) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow))) !important;
+  /* clip with a margin so spotify's drag handle in the gap next to the panel still works */
+  overflow: clip !important;
+  overflow-clip-margin: 12px !important;
+  isolation: isolate !important;
+}
+
+[data-vz-panel] > :not(.main-card-card) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* collapsed sidebar, no extra padding so the icons don't get cut */
+[data-vz-panel][data-vz-compact] {
+  padding-inline: 0 !important;
+}
+
+:is([data-vz-compact], #vz-never) [data-encore-id="listRow"][data-encore-id] {
+  margin-inline: 0 !important;
+  width: 100% !important;
+}
+
+/* fully hidden sidebars and the arrow tabs that bring them back */
+.vz-hidden { display: none !important; }
+.vz-edge-tab {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(18, 18, 18, 0.92);
+  color: var(--vz-spectral);
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: .45;
+  transition: opacity .2s ease, box-shadow .2s ease;
+}
+.vz-edge-tab svg { width: 10px; height: 18px; }
+.vz-edge-right svg { transform: scaleX(-1); }
+.vz-edge-left.vz-tab-closed svg { transform: scaleX(-1); }
+.vz-edge-right.vz-tab-closed svg { transform: none; }
+.vz-edge-tab:hover,
+.vz-edge-tab.vz-tab-closed {
+  opacity: 1;
+}
+.vz-edge-tab:hover { box-shadow: 0 0 14px -4px var(--vz-spectral-dim); }
+
+/* icon strip for the right side, matches the left one's icon view */
+.vz-rightstrip {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  border: 1px solid rgba(var(--vz-accent-rgb), calc(0.30 * var(--vz-line)));
+  border-radius: var(--vz-radius);
+  background: var(--vz-panel-glass);
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%);
+  box-shadow: inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow)));
+  pointer-events: auto;
+  overflow: hidden;
+}
+.vz-strip-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  cursor: ew-resize;
+}
+.vz-strip-grip:hover { box-shadow: inset 2px 0 0 var(--vz-spectral); }
+.vz-strip-cover {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: box-shadow .25s ease;
+}
+.vz-strip-cover:not([src]), .vz-strip-cover[src=""] { visibility: hidden; }
+.vz-strip-cover:hover { box-shadow: var(--vz-hover-glow); }
+.vz-strip-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--vz-text-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+.vz-strip-btn svg { width: 20px; height: 20px; }
+.vz-strip-btn:hover {
+  color: var(--vz-spectral);
+  background: var(--vz-surface);
+  box-shadow: var(--vz-hover-glow);
+}
+
+/* round glass buttons: our window buttons plus back, forward, home and the marketplace cart */
+.vz-winbtns {
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.vz-winbtn,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink) {
+  width: var(--vz-btn-size) !important;
+  min-width: var(--vz-btn-size) !important;
+  height: var(--vz-btn-size) !important;
+  min-height: var(--vz-btn-size) !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: var(--vz-glass-shadow) !important;
+  color: var(--vz-text-muted) !important;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .1s ease !important;
+}
+.vz-winbtn svg { width: 12px; height: 12px; }
+/* spotify wraps some of these (home) in taller boxes, so center the button inside its wrapper */
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink) {
+  align-self: center !important;
+  margin-block: auto !important;
+}
+:is(.Root__globalNav, header) :has(> :is(button[aria-label="Home"], [data-testid="home-button"], .custom-navlink, button[aria-label="Go back"])) {
+  display: flex !important;
+  align-items: center !important;
+  align-self: stretch !important;
+}
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink) svg {
+  width: 16px !important;
+  height: 16px !important;
+  fill: currentcolor !important;
+}
+.vz-winbtn:hover,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink):not(:disabled):hover {
+  color: var(--vz-text) !important;
+  border-color: rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line))) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 16px -4px var(--vz-spectral-dim) !important;
+}
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"]):disabled {
+  opacity: .45 !important;
+  cursor: default;
+}
+.vz-winbtn-close:hover {
+  color: #fff !important;
+  border-color: rgba(255, 68, 85, 0.6) !important;
+  background: rgba(255, 68, 85, 0.22) !important;
+  box-shadow: 0 0 16px -4px rgba(255, 68, 85, 0.6) !important;
+}
+.vz-winbtn:active,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink):not(:disabled):active {
+  transform: scale(.94);
+}
+
+/* settings: hover style, background toggles */
+html[data-vz-hover="solid"] .main-trackList-trackListRow:hover {
+  background: var(--vz-surface) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-vz-hover="off"] .main-trackList-trackListRow:hover,
+html[data-vz-hover="off"] :is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [data-encore-id="listRow"]):hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html[data-vz-hover="off"] :is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut):hover::after { opacity: 0 !important; }
+html[data-vz-noshapes] .vz-shape-field,
+html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
+
+/* settings panel */
+.vz-settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 8, 10, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.vz-settings {
+  box-sizing: border-box;
+  width: min(440px, calc(100vw - 40px));
+  max-height: calc(100vh - 80px);
+  overflow: auto;
+  padding: 20px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--vz-glass-border);
+  background: var(--vz-glass-bg);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: var(--vz-glass-shadow), 0 24px 60px rgba(0, 0, 0, 0.55);
+  color: var(--vz-text);
+  font-family: 'inter', system-ui, sans-serif;
+}
+.vz-settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.vz-settings-head h2 {
+  margin: 0;
+  font: 600 18px 'space grotesk', system-ui, sans-serif;
+  letter-spacing: -.01em;
+}
+.vz-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-top: 1px solid var(--vz-hairline);
+  font-size: 13px;
+  color: var(--vz-text-muted);
+}
+.vz-set-row > span { flex-shrink: 0; }
+.vz-set-ctl { display: flex; align-items: center; gap: 8px; }
+.vz-set-val { width: 38px; text-align: right; font: 12px 'jetbrains mono', monospace; color: var(--vz-text-faint); }
+.vz-swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.vz-swatch[aria-pressed="true"] { border-color: var(--vz-text); }
+.vz-settings input[type="color"] {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--vz-glass-border);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.vz-settings input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.vz-settings input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+.vz-set-default {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--vz-glass-border);
+  background: transparent;
+  color: var(--vz-text-muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+.vz-set-default[aria-pressed="true"] { color: var(--vz-text); border-color: rgba(var(--vz-accent-rgb), 0.6); }
+.vz-picker { display: grid; gap: 10px; padding: 4px 0 12px; }
+.vz-picker-sv {
+  position: relative;
+  height: 140px;
+  border-radius: 10px;
+  cursor: crosshair;
+  touch-action: none;
+  box-shadow: inset 0 0 0 1px var(--vz-hairline);
+}
+.vz-picker-hue {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.vz-picker-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+.vz-picker-hue .vz-picker-dot { top: 50%; }
+.vz-picker-hex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--vz-text-muted);
+}
+.vz-picker-hex input {
+  width: 96px;
+  padding: 6px 10px;
+  border-radius: 999px !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  background: rgba(20, 20, 22, 0.5) !important;
+  color: var(--vz-text);
+  font: 12px 'jetbrains mono', monospace;
+  box-shadow: none !important;
+}
+.vz-picker-preview {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--vz-hairline), 0 0 14px -2px rgba(var(--vz-accent-rgb), 0.6);
+}
+.vz-settings input[type="range"] { width: 150px; accent-color: var(--vz-spectral); cursor: pointer; }
+.vz-seg {
+  display: flex;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--vz-glass-border);
+  background: rgba(20, 20, 22, 0.5);
+}
+.vz-seg button {
+  border: none;
+  background: transparent;
+  color: var(--vz-text-muted);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.vz-seg button[aria-pressed="true"] {
+  background: rgba(var(--vz-accent-rgb), 0.22);
+  color: var(--vz-text);
+  box-shadow: inset 0 0 0 1px rgba(var(--vz-accent-rgb), 0.5);
+}
+.vz-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(224, 234, 249, 0.12);
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.vz-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--vz-text);
+  transition: transform .2s ease;
+}
+.vz-toggle:checked { background: rgba(var(--vz-accent-rgb), 0.7); }
+.vz-toggle:checked::after { transform: translateX(16px); }
+.vz-set-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.vz-set-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--vz-glass-border);
+  background: var(--vz-glass-bg);
+  color: var(--vz-text);
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.vz-set-btn:hover {
+  border-color: rgba(var(--vz-accent-rgb), calc(0.6 * var(--vz-line)));
+  box-shadow: 0 0 16px -4px rgba(var(--vz-accent-rgb), calc(0.35 * var(--vz-glow)));
+}
+.vz-winbtn-settings { margin-right: 6px; }
+.vz-winbtn-settings svg { width: 14px !important; height: 14px !important; }
+
+/* the outline around each box, drawn by theme.js */
+.vz-frame-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+.vz-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border: 1px solid rgba(var(--vz-accent-rgb), calc(0.30 * var(--vz-line)));
+  border-radius: var(--vz-radius);
+  box-shadow: inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow)));
+}
+
+[data-vz-panel] { z-index: 1 !important; }
+
+.Root__now-playing-bar,
+[data-vz-player] {
+  background: rgba(10, 10, 10, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: var(--vz-radius) !important;
+  box-shadow: none !important;
+}
+[data-vz-player] {
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  padding-inline: calc(var(--vz-gap) + var(--vz-pad)) !important;
+}
+[data-vz-player]::after {
+  content: '';
+  position: absolute;
+  inset: var(--vz-gap);
+  border-radius: inherit;
+  box-shadow: var(--vz-frame);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.Root__top-bar header,
+.Root__top-bar,
+[data-vz-topbar] {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+[data-vz-topbar] {
+  box-sizing: border-box !important;
+  padding-inline: calc(var(--vz-gap) + var(--vz-pad)) !important;
+  /* --vz-push comes from theme.js so spotify's icons clear our window buttons */
+  padding-right: calc(var(--vz-gap) + var(--vz-pad) + var(--vz-push, 0px)) !important;
+  border-radius: var(--vz-radius) !important;
+}
+[data-vz-topbar]::after {
+  content: '';
+  position: absolute;
+  inset: var(--vz-gap);
+  border-radius: inherit;
+  box-shadow: var(--vz-frame);
+  pointer-events: none;
+  z-index: 50;
+
+  right: calc(var(--vz-gap) - var(--vz-topbar-extra, 0px));
+}
+
+.main-navBar-navBarLink-active,
+.main-navBar-navBarLink[aria-current="page"],
+a[aria-current="page"] {
+  color: var(--vz-spectral) !important;
+  background: color-mix(in srgb, var(--vz-spectral) 12%, transparent) !important;
+  box-shadow: inset 3px 0 0 0 var(--vz-spectral) !important;
+}
+
+/* removes the colored gradients spotify adds from cover art */
+.main-entityHeader-backgroundColor,
+.main-entityHeader-overlay,
+.main-entityHeader-shadow,
+.main-actionBarBackground-background,
+[class*="actionBarBackground"] {
+  display: none !important;
+}
+
+.main-entityHeader-container,
+.main-entityHeader-background,
+.main-home-homeHeader,
+[class*="homeHeader"],
+[class*="home-header"],
+
+#main-view main > div > div:empty,
+.main-home-filterChipsSection,
+.main-actionBar-ActionBar,
+[data-testid="playlist-page"],
+[data-testid="album-page"],
+[data-testid="artist-page"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.main-entityHeader-container::before,
+.main-entityHeader-container::after,
+.main-home-content::before,
+.main-home-content::after,
+.main-home-homeHeader::before,
+.main-home-homeHeader::after,
+.main-view-container__scroll-node-child::before,
+.main-view-container__scroll-node-child::after {
+  background: none !important;
+  background-image: none !important;
+}
+
+[data-vz-clearpseudo]::before,
+[data-vz-clearpseudo]::after {
+  background: none !important;
+  background-image: none !important;
+}
+
+.main-topBar-background {
+  background: rgba(15, 15, 15, 0.7) !important;
+  background-color: rgba(15, 15, 15, 0.7) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+}
+
+.main-topBar-container,
+.main-topBar-background,
+.main-home-filterChipsSection,
+.marketplace-header,
+.marketplace-header__container,
+html [data-vz-sticky] {
+  background: rgba(15, 15, 15, 0.55) !important;
+  background-color: rgba(15, 15, 15, 0.55) !important;
+  background-image: none !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow: none !important;
+}
+.main-topBar-container::before, .main-topBar-container::after,
+.main-home-filterChipsSection::before, .main-home-filterChipsSection::after,
+[data-vz-sticky]::before, [data-vz-sticky]::after {
+  background: none !important;
+  background-image: none !important;
+}
+.marketplace-header { border-bottom: 1px solid var(--vz-hairline) !important; }
+
+/* hover glow for cards, recent tiles and library items */
+:is(.main-card-card, [data-encore-id="card"]):has(img),
+:is(.view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img) {
+  position: relative !important;
+  border: none !important;
+  border-radius: 10px !important;
+  background-color: transparent !important;
+  transition: background-color .3s ease, box-shadow .3s ease !important;
+}
+:is(.main-card-card, [data-encore-id="card"]):has(img) { margin: 1px !important; }
+
+:is(.view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img) {
+  overflow: hidden !important;
+  background-color: rgba(224, 234, 249, 0.04) !important;
+}
+
+:is(.main-card-card, [data-encore-id="card"]):has(img):hover {
+  background: var(--vz-surface) !important;
+  background-color: var(--vz-surface) !important;
+  box-shadow: 0 0 22px -6px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow))) !important;
+}
+/* recents tiles that theme.js finds by layout, in case spotify's class names don't match */
+[data-vz-tile] {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: rgba(224, 234, 249, 0.04) !important;
+  transition: box-shadow .25s ease, background .25s ease !important;
+}
+[data-vz-tile] :not(img, button, button *, [role="button"], [role="button"] *) {
+  background-color: transparent !important;
+}
+[data-vz-tile]:hover {
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: inset 0 0 0 1px var(--vz-glass-border), var(--vz-glass-shadow) !important;
+}
+html[data-vz-hover="solid"] [data-vz-tile]:hover { background: var(--vz-surface) !important; backdrop-filter: none !important; }
+html[data-vz-hover="off"] [data-vz-tile]:hover { background: rgba(224, 234, 249, 0.04) !important; box-shadow: none !important; backdrop-filter: none !important; }
+
+/* recents tiles get the same glass as the buttons and song rows */
+:is(.view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img):hover {
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: var(--vz-glass-shadow) !important;
+}
+
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line))),
+    inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.35 * var(--vz-glow))) !important;
+  opacity: 0;
+  transition: opacity .3s ease !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img):hover::after {
+  opacity: 1 !important;
+}
+
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i])
+  :not(img, button, button *, [role="button"], [role="button"] *, [data-encore-id^="button"], [data-encore-id^="button"] *),
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i])::before,
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i])::after {
+  background-color: transparent !important;
+}
+
+.main-yourLibraryX-library [data-encore-id="listRow"]:has(img),
+#Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img) {
+
+  box-sizing: border-box !important;
+  margin-inline: var(--vz-lib-left) var(--vz-lib-right) !important;
+  width: calc(100% - var(--vz-lib-left) - var(--vz-lib-right)) !important;
+  border-radius: 8px !important;
+  transition: background-color .18s ease, box-shadow .25s ease !important;
+}
+.main-yourLibraryX-library [data-encore-id="listRow"]:has(img):hover,
+#Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img):hover {
+  background: var(--vz-surface) !important;
+  box-shadow: var(--vz-hover-glow) !important;
+}
+
+/* song rows */
+.main-trackList-trackListRow {
+  border-radius: 8px !important;
+  transition: background-color .18s ease, box-shadow .25s ease !important;
+}
+
+/* song rows get the same glass as the buttons on hover */
+.main-trackList-trackListRow:hover {
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: inset 0 0 0 1px var(--vz-glass-border), var(--vz-glass-shadow) !important;
+}
+.main-trackList-trackListRow[aria-selected="true"] {
+  background: var(--vz-surface-2) !important;
+}
+
+.main-trackList-playingIcon,
+[data-testid="playback-widget"] svg {
+  color: var(--vz-spectral) !important;
+  fill: var(--vz-spectral) !important;
+}
+
+.playback-bar .progress-bar__fg,
+.playback-progressbar__fg,
+[data-testid="volume-bar"] .progress-bar__fg {
+  background: linear-gradient(90deg, var(--vz-spectral-dim), var(--vz-spectral)) !important;
+  box-shadow: 0 0 10px var(--vz-spectral-dim) !important;
+}
+.progress-bar__slider-handle,
+.playback-progressbar__seeker-thumb {
+  background: var(--spice-text) !important;
+  box-shadow: 0 0 10px var(--vz-spectral-dim) !important;
+}
+
+[data-testid="heart-button"][aria-checked="true"] svg,
+.control-button--liked svg,
+[aria-label="remove from your library" i] svg {
+  fill: var(--vz-spectral) !important;
+  filter: drop-shadow(0 0 6px var(--vz-spectral-dim)) !important;
+}
+
+[data-testid="context-item-info-title"] a:hover,
+.main-trackInfo-name a:hover {
+  color: var(--spice-text) !important;
+  text-shadow: 0 0 14px var(--vz-spectral-dim) !important;
+}
+
+@keyframes vz-scan-sweep { 0% { top: -40%; } 100% { top: 100%; } }
+
+[data-testid="CoverSlotExpanded__container"] { position: relative; overflow: hidden; }
+[data-testid="CoverSlotExpanded__container"]::after {
+  content: '';
+  position: absolute; left: 0; right: 0; top: -40%; height: 40%;
+  background: linear-gradient(to bottom, rgba(var(--vz-accent-rgb), calc(0 * var(--vz-glow))), rgba(var(--vz-accent-rgb), calc(.05 * var(--vz-glow))), rgba(var(--vz-accent-rgb), calc(0 * var(--vz-glow))));
+  animation: vz-scan-sweep 6s linear infinite;
+  pointer-events: none; z-index: 1;
+}
+
+.x-searchInput-searchInputInput,
+input[type="text"],
+input[type="search"] {
+  background: var(--vz-surface) !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  color: var(--spice-text) !important;
+  transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+.x-searchInput-searchInputInput:focus,
+input[type="text"]:focus,
+input[type="search"]:focus {
+  border-color: rgba(var(--vz-accent-rgb), calc(.45 * var(--vz-line))) !important;
+  box-shadow: 0 0 0 3px var(--vz-spectral-dim) !important;
+  outline: none !important;
+}
+input::placeholder { color: var(--vz-text-faint) !important; }
+
+.main-contextMenu-menu,
+.GlueDropdown {
+  background: rgba(22, 22, 22, 0.92) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow:
+    0 16px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3),
+    inset 1px 1px 0 0 rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-line))),
+    inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))) !important;
+}
+.main-contextMenu-menuItem:hover,
+.GlueDropdown-menuItem:hover {
+  background: var(--vz-surface-2) !important;
+  color: var(--spice-text) !important;
+}
+
+/* search bar and popups */
+.encore-dark-theme,
+.encore-dark-theme .encore-base-set {
+  --background-elevated-base: rgba(18, 18, 18, 0.94) !important;
+  --background-elevated-highlight: var(--vz-surface-2) !important;
+  --background-elevated-press: var(--vz-surface-2) !important;
+}
+
+[role="search"],
+form:has([data-testid="search-input"]) {
+  height: var(--vz-btn-size) !important;
+  min-height: var(--vz-btn-size) !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: var(--vz-glass-shadow) !important;
+  transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+[role="search"]:focus-within,
+form:has([data-testid="search-input"]):focus-within {
+  border-color: rgba(var(--vz-accent-rgb), calc(.55 * var(--vz-line))) !important;
+  box-shadow: var(--vz-glass-shadow), 0 0 18px -6px var(--vz-spectral-dim) !important;
+}
+/* spotify nests a search box inside the search form, so the inner one goes flat or you get two outlines */
+:is([role="search"], form:has([data-testid="search-input"])) :is([role="search"], form, div:has(> [data-testid="search-input"])) {
+  border: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+/* the general input focus ring was drawing a second outline inside the pill */
+:is([role="search"], form:has([data-testid="search-input"])) input,
+:is([role="search"], form:has([data-testid="search-input"])) input:is(:focus, :focus-visible) {
+  background: transparent !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* browse button inside the search pill stays flat, just lights up */
+[role="search"] button,
+form:has([data-testid="search-input"]) button {
+  background: transparent !important;
+  color: var(--vz-text-muted) !important;
+}
+[role="search"] button:hover,
+form:has([data-testid="search-input"]) button:hover {
+  color: var(--vz-spectral) !important;
+}
+/* everything inside the pill fits the same height as the round buttons */
+[role="search"] :is(input, button),
+form:has([data-testid="search-input"]) :is(input, button) {
+  height: calc(var(--vz-btn-size) - 2px) !important;
+  min-height: 0 !important;
+  padding-block: 0 !important;
+}
+[role="search"] svg,
+form:has([data-testid="search-input"]) svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+[role="search"] input,
+[data-testid="search-input"] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* lift the top bar above the page and the outlines, or the search dropdown slides under them */
+#global-nav-bar,
+.Root__globalNav,
+[data-vz-topbar] {
+  position: relative;
+  z-index: 60 !important;
+}
+
+/* search dropdown as a glass panel */
+[role="search"] ~ [role="listbox"],
+[role="listbox"]:has([role="option"]),
+[data-testid*="search-dropdown" i],
+[data-testid*="search-results-dropdown" i],
+:is(#global-nav-bar, .Root__globalNav) :is([role="dialog"], [role="listbox"]) {
+  background: radial-gradient(120% 120% at 0% 0%, rgba(224, 234, 249, 0.08), rgba(224, 234, 249, 0.02) 45%, transparent 70%), rgba(16, 16, 18, 0.78) !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  border-radius: 16px !important;
+  padding: 6px !important;
+  backdrop-filter: blur(22px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.55) !important;
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  clip-path: inset(0 round 16px) !important;
+}
+:is(#global-nav-bar, .Root__globalNav) :is([role="dialog"], [role="listbox"]) * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+[role="listbox"] :is(h2, h3, [role="heading"]) {
+  font-family: 'space grotesk', system-ui, sans-serif !important;
+  letter-spacing: -.005em !important;
+}
+
+[role="listbox"] :is([role="option"], [role="row"]) {
+  border-radius: 8px !important;
+  transition: background-color .18s ease, box-shadow .2s ease !important;
+}
+[role="listbox"] :is([role="option"], [role="row"]):is(:hover, [aria-selected="true"], :focus-visible),
+:is(#global-nav-bar, .Root__globalNav) [role="dialog"] :is([role="option"], [role="row"], [role="button"], a):hover {
+  background: var(--vz-glass-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--vz-glass-border), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  outline: none !important;
+}
+.GenericModal__overlay {
+  background: rgba(11, 11, 11, .75) !important;
+  backdrop-filter: blur(8px) !important;
+}
+.GenericModal__wrapper {
+  background: var(--vz-surface) !important;
+  border: 1px solid var(--vz-hairline) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    inset 1px 1px 0 0 rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-line))),
+    inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))) !important;
+}
+
+/* thin accent scrollbars that fade out at both ends and stay clear of the rounded corners */
+:root {
+  --vz-scroll: linear-gradient(to bottom, transparent, rgba(var(--vz-accent-rgb), .45) 22%, rgba(var(--vz-accent-rgb), .45) 78%, transparent);
+  --vz-scroll-hover: linear-gradient(to bottom, transparent, rgba(var(--vz-accent-rgb), .85) 18%, rgba(var(--vz-accent-rgb), .85) 82%, transparent);
+  --vz-scroll-x: linear-gradient(to right, transparent, rgba(var(--vz-accent-rgb), .45) 22%, rgba(var(--vz-accent-rgb), .45) 78%, transparent);
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; margin-block: 10px; margin-inline: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--vz-scroll) padding-box;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  min-height: 48px;
+}
+::-webkit-scrollbar-thumb:horizontal { background: var(--vz-scroll-x) padding-box; min-width: 48px; }
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background: var(--vz-scroll-hover) padding-box;
+}
+::-webkit-scrollbar-corner { background: transparent; }
+
+.os-scrollbar,
+.os-scrollbar:hover,
+.os-scrollbar:active {
+  --os-size: 6px !important;
+  --os-padding-perpendicular: 1px !important;
+  --os-padding-axis: 10px !important;
+}
+.os-scrollbar .os-scrollbar-track,
+[class*="scrollbar-track"] {
+  background: transparent !important;
+}
+.os-scrollbar .os-scrollbar-handle,
+[class*="scrollbar-handle"] {
+  background: var(--vz-scroll) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  transition: opacity .2s ease !important;
+}
+.os-scrollbar-horizontal .os-scrollbar-handle { background: var(--vz-scroll-x) !important; }
+.os-scrollbar:hover .os-scrollbar-handle,
+.os-scrollbar .os-scrollbar-handle:hover,
+.os-scrollbar .os-scrollbar-handle.active,
+[class*="scrollbar-handle"]:hover {
+  background: var(--vz-scroll-hover) !important;
+}
+
+:is(a, button, input, select, textarea, [role="button"], [role="slider"], [role="tab"]):focus-visible {
+  outline: 2px solid var(--spice-text) !important;
+  outline-offset: 2px !important;
+}
+[data-vz-panel]:focus,
+[data-vz-panel] :focus:not(:is(a, button, input, select, textarea, [role="button"], [role="slider"], [role="tab"])),
+[tabindex="-1"]:focus {
+  outline: none !important;
+}
+
+.main-trackList-rowSectionIndex,
+.main-trackList-rowDuration,
+time,
+[data-testid="tracklist-duration"] {
+  font-family: 'jetbrains mono', 'sfmono-regular', consolas, monospace !important;
+  font-size: .82em !important;
+  color: var(--vz-text-faint) !important;
+}
+
+h1, h2, h3,
+.main-entityHeader-title,
+[data-testid="entityTitle"],
+.main-shelf-title {
+  font-family: 'space grotesk', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -.005em !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition-duration: .01ms !important; }
+  .vz-shape-field { display: none !important; }
+}
+
+/* uncomment this to hide scrollbars completely
+::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+.os-scrollbar, [class*="scrollbar-track"], [class*="scrollbar-handle"] { display: none !important; }
+*/
