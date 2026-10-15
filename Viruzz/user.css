@@ -1,5 +1,4 @@
 /* viruzz theme for spicetify, matches viruzz.xyz */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* main colors and sizes, change stuff here */
 :root {
@@ -13,6 +12,9 @@
   --vz-accent-rgb: 139, 154, 237;
   --vz-glow: 1;
   --vz-line: 1;
+  /* rotating hover outline color, follows the accent unless the settings panel picks one */
+  --vz-hover-rgb: var(--vz-accent-rgb);
+  --vz-ring-on: 1;
   --vz-glass-tint: 0.62;
   --vz-btn-size: 38px;
   --vz-glass-blur: 14px;
@@ -21,11 +23,17 @@
   /* glass like the site's stat cards: dark tint with a soft light in the top left corner, blue outline */
   --vz-glass-bg: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02) 45%, transparent 70%), rgba(20, 20, 22, var(--vz-glass-tint));
   /* same glass for the big boxes, a bit lighter so the dots still show through */
-  --vz-panel-glass: radial-gradient(90% 70% at 0% 0%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 50%, transparent 75%), rgba(18, 18, 20, calc(var(--vz-glass-tint) * 0.7));
+  --vz-bg-alpha: 1;
+  --vz-bg-inv: 0;
+  /* black inner shadow, only shows once the container backgrounds are made transparent (theme.js sets --vz-bg-inv) */
+  --vz-inner-shadow: inset 0 0 calc(60px * var(--vz-bg-inv)) calc(8px * var(--vz-bg-inv)) rgba(0, 0, 0, calc(0.85 * var(--vz-bg-inv)));
+  --vz-panel-glass: radial-gradient(90% 70% at 0% 0%, rgba(255, 255, 255, calc(0.06 * var(--vz-bg-alpha))), rgba(255, 255, 255, calc(0.015 * var(--vz-bg-alpha))) 50%, transparent 75%), rgba(18, 18, 20, calc(var(--vz-glass-tint) * 0.7 * var(--vz-bg-alpha)));
   --vz-glass-border: rgba(var(--vz-accent-rgb), calc(0.32 * var(--vz-line)));
   --vz-glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.35);
   --vz-hairline: rgba(224, 234, 249, 0.11);
   --vz-radius: 10px;
+  --vz-radius-sm: calc(var(--vz-radius) * 0.8);
+  --vz-radius-lg: calc(var(--vz-radius) * 1.6);
   --vz-gap: 6px;
   --vz-pad: 10px;
 
@@ -101,12 +109,13 @@ body { background: transparent !important; }
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
+  contain: strict;
 }
 .vz-shape {
   position: absolute;
   border: 1px solid var(--vz-hairline);
   color: var(--vz-hairline);
-  will-change: transform, filter;
+  will-change: transform;
 }
 .vz-shape-circle { border-radius: 50%; }
 .vz-shape-spectral { border-color: var(--vz-spectral-dim); color: var(--vz-spectral-dim); }
@@ -145,16 +154,19 @@ body { background: transparent !important; }
   50% { transform: translatex(112px) rotate(-40deg); }
 }
 
+/* the glow is a fixed filter, only the opacity flickers, so it never repaints */
+.vz-shape-glowy {
+  filter: drop-shadow(0 0 9px var(--glow-color));
+  will-change: transform, opacity;
+}
 @keyframes vz-shape-glow-flicker {
-  0% { filter: drop-shadow(0 0 0 transparent); }
-  8% { filter: drop-shadow(0 0 7px var(--glow-color)); }
-  15% { filter: drop-shadow(0 0 1px transparent); }
-  32% { filter: drop-shadow(0 0 10px var(--glow-color)); }
-  46% { filter: drop-shadow(0 0 2px transparent); }
-  60% { filter: drop-shadow(0 0 12px var(--glow-color)); }
-  74% { filter: drop-shadow(0 0 0 transparent); }
-  88% { filter: drop-shadow(0 0 8px var(--glow-color)); }
-  100% { filter: drop-shadow(0 0 0 transparent); }
+  0%, 74%, 100% { opacity: .4; }
+  8% { opacity: 1; }
+  15% { opacity: .5; }
+  32% { opacity: 1; }
+  46% { opacity: .45; }
+  60% { opacity: 1; }
+  88% { opacity: .85; }
 }
 
 .Root__nav-bar,
@@ -182,10 +194,11 @@ body { background: transparent !important; }
 
   border: none !important;
   border-radius: var(--vz-radius) !important;
-  background: var(--vz-panel-glass) !important;
-  backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow))) !important;
+  /* --vz-lx / --vz-ly come from theme.js so the light can follow the cursor */
+  background: radial-gradient(90% 70% at var(--vz-lx, 0%) var(--vz-ly, 0%), rgba(255, 255, 255, calc(0.065 * var(--vz-bg-alpha))), rgba(255, 255, 255, calc(0.015 * var(--vz-bg-alpha))) 50%, transparent 75%), rgba(18, 18, 20, calc(var(--vz-glass-tint) * 0.7 * var(--vz-bg-alpha))) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) !important;
+  box-shadow: var(--vz-inner-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow))) !important;
   /* clip with a margin so spotify's drag handle in the gap next to the panel still works */
   overflow: clip !important;
   overflow-clip-margin: 12px !important;
@@ -246,9 +259,9 @@ body { background: transparent !important; }
   border: 1px solid rgba(var(--vz-accent-rgb), calc(0.30 * var(--vz-line)));
   border-radius: var(--vz-radius);
   background: var(--vz-panel-glass);
-  backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%);
-  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(130%);
-  box-shadow: inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow)));
+  backdrop-filter: blur(var(--vz-glass-blur));
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur));
+  box-shadow: var(--vz-inner-shadow), inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))), 0 0 18px -14px rgba(var(--vz-accent-rgb), calc(0.45 * var(--vz-glow)));
   pointer-events: auto;
   overflow: hidden;
 }
@@ -387,11 +400,11 @@ html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
 }
 .vz-settings {
   box-sizing: border-box;
-  width: min(440px, calc(100vw - 40px));
+  width: min(480px, calc(100vw - 40px));
   max-height: calc(100vh - 80px);
   overflow: auto;
-  padding: 20px 22px;
-  border-radius: 16px;
+  padding: 0 22px 18px;
+  border-radius: var(--vz-radius-lg);
   border: 1px solid var(--vz-glass-border);
   background: var(--vz-glass-bg);
   backdrop-filter: blur(22px) saturate(150%);
@@ -423,7 +436,21 @@ html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
 }
 .vz-set-row > span { flex-shrink: 0; }
 .vz-set-ctl { display: flex; align-items: center; gap: 8px; }
-.vz-set-val { width: 38px; text-align: right; font: 12px 'jetbrains mono', monospace; color: var(--vz-text-faint); }
+.vz-set-val { width: 46px; text-align: right; font: 12px 'jetbrains mono', monospace; color: var(--vz-text-faint); cursor: text; border-radius: 6px; transition: color .2s ease, background-color .2s ease; }
+.vz-set-val:hover { color: var(--vz-text); background: rgba(224, 234, 249, 0.06); }
+.vz-set-val input.vz-set-num {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 20px !important;
+  padding: 0 4px !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(var(--vz-accent-rgb), 0.6) !important;
+  background: rgba(20, 20, 22, 0.7) !important;
+  color: var(--vz-text) !important;
+  font: 12px 'jetbrains mono', monospace !important;
+  text-align: right !important;
+  box-shadow: none !important;
+}
 .vz-swatch {
   width: 20px;
   height: 20px;
@@ -458,7 +485,7 @@ html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
 .vz-picker-sv {
   position: relative;
   height: 140px;
-  border-radius: 10px;
+  border-radius: var(--vz-radius);
   cursor: crosshair;
   touch-action: none;
   box-shadow: inset 0 0 0 1px var(--vz-hairline);
@@ -553,6 +580,16 @@ html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
 }
 .vz-toggle:checked { background: rgba(var(--vz-accent-rgb), 0.7); }
 .vz-toggle:checked::after { transform: translateX(16px); }
+.vz-set-sub {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--vz-hairline);
+  font: 600 11px 'space grotesk', system-ui, sans-serif;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--vz-text-faint);
+}
+.vz-set-sub + .vz-set-row { border-top: none; }
 .vz-set-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
 .vz-set-btn {
   padding: 8px 16px;
@@ -590,23 +627,129 @@ html[data-vz-nodots] #viruzz-bg-canvas { display: none !important; }
 
 [data-vz-panel] { z-index: 1 !important; }
 
+/* player bar parts scale on their own (sliders in the settings panel), 100% is spotify's default look */
+:root { --vz-z-cover: 1; --vz-z-ctrl: 1; --vz-z-prog: 1; --vz-z-extra: 1; }
+[data-vz-player] :is([data-testid="now-playing-widget"], .main-nowPlayingWidget-nowPlaying):not(:is([data-testid="now-playing-widget"], .main-nowPlayingWidget-nowPlaying) *) { zoom: var(--vz-z-cover); }
+[data-vz-player] :is(.player-controls__buttons):not(:is(.player-controls__buttons) *) { zoom: var(--vz-z-ctrl); }
+[data-vz-player] :is(.playback-bar):not(:is(.playback-bar) *) { zoom: var(--vz-z-prog); }
+[data-vz-player] :is(.main-nowPlayingBar-extraControls, .main-nowPlayingBar-right > *):not(:is(.main-nowPlayingBar-extraControls, .main-nowPlayingBar-right > *) *) { zoom: var(--vz-z-extra); }
+
+/* drag handles on the player bar's top edge and the bottom edge of each sidebar */
+.vz-grip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 10px;
+  pointer-events: auto;
+  cursor: ns-resize;
+  touch-action: none;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.vz-grip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 3px;
+  margin: -1.5px 0 0 -22px;
+  border-radius: 2px;
+  background: var(--vz-spectral);
+  box-shadow: 0 0 10px var(--vz-spectral-dim);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.vz-grip:hover::after,
+.vz-grip.vz-dragging::after { opacity: .85; }
+
+/* free-move player bar: the bottom handle moves it, so it gets a grab cursor and a longer pill */
+html[data-vz-pfree] .vz-grip-lift { cursor: grab; }
+html[data-vz-pfree] .vz-grip-lift::after { width: 72px; margin-left: -36px; }
+html.vz-moving, html.vz-moving * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
+
+/* padding around the whole app, added on top of spotify's own (theme.js measures that into --vz-gbase-*) */
+html[data-vz-padding] [data-vz-grid] {
+  box-sizing: border-box !important;
+  padding-top: calc(var(--vz-gbase-t, 0px) + var(--vz-padt, 0px)) !important;
+  padding-right: calc(var(--vz-gbase-r, 0px) + var(--vz-padr, 0px)) !important;
+  padding-bottom: calc(var(--vz-gbase-b, 0px) + var(--vz-padb, 0px)) !important;
+  padding-left: calc(var(--vz-gbase-l, 0px) + var(--vz-padl, 0px)) !important;
+}
+
+/* lite effects: no blur behind the big surfaces and no floating shapes */
+html[data-vz-lite] :is([data-vz-panel], [data-vz-topbar], [data-vz-sticky], [data-vz-player], .vz-rightstrip, .main-topBar-container, .main-topBar-background, .main-home-filterChipsSection, .marketplace-header) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-vz-lite] .vz-shape-field { display: none !important; }
+
+/* the bar gets ONE glass layer (on the tagged element), so it follows "Container background opacity" like the other boxes.
+   spotify's own bar wrapper and the layers inside it stay see-through, otherwise the glass stacks and looks solid */
 .Root__now-playing-bar,
+[data-vz-player] > *,
+[data-vz-player] :is(.main-nowPlayingBar-nowPlayingBar, .main-nowPlayingBar-container, footer) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.Root__now-playing-bar { border-radius: var(--vz-radius) !important; }
 [data-vz-player] {
-  background: rgba(10, 10, 10, 0.92) !important;
+  background: var(--vz-panel-glass) !important;
+  /* blur fades out with the opacity slider, so at 0% the bar is truly clear */
+  backdrop-filter: blur(calc(var(--vz-glass-blur) * var(--vz-bg-alpha))) !important;
+  -webkit-backdrop-filter: blur(calc(var(--vz-glass-blur) * var(--vz-bg-alpha))) !important;
+  border-radius: var(--vz-radius) !important;
+  box-shadow: var(--vz-inner-shadow) !important;
+}
+html[data-vz-pfree] [data-vz-player] {
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
-  border-radius: var(--vz-radius) !important;
-  box-shadow: none !important;
 }
+/* in free mode theme.js draws the bar's outline itself (.vz-frame-player), above everything the bar passes over */
+html[data-vz-pfree] [data-vz-player]::after { display: none; }
+
+/* while the bar is held: it lifts off the page and its outline lights up with a travelling highlight */
+.vz-frame-player { transition: border-color .25s ease, box-shadow .25s ease; }
+html.vz-moving [data-vz-player] { box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65) !important; }
+html.vz-moving .vz-frame-player {
+  border-color: rgba(var(--vz-accent-rgb), 0.8);
+  box-shadow: inset 0 0 28px -12px rgba(var(--vz-accent-rgb), 0.45), 0 0 26px -8px rgba(var(--vz-accent-rgb), 0.5);
+}
+.vz-frame-player::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  box-sizing: border-box;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0) 0deg,
+    rgba(var(--vz-hover-rgb), 0) 200deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+html.vz-moving .vz-frame-player::after { opacity: 1; animation: vz-ring-spin 1.6s linear infinite; }
 [data-vz-player] {
   overflow: hidden !important;
   box-sizing: border-box !important;
   padding-inline: calc(var(--vz-gap) + var(--vz-pad)) !important;
+  /* space between the outline and the cover / controls, change this number to taste */
+  padding-block: var(--vz-bar-padding, 8px) !important;
 }
 [data-vz-player]::after {
   content: '';
   position: absolute;
-  inset: var(--vz-gap);
+  /* flush left and right so the outline lines up with the sidebars and main view */
+  inset: var(--vz-gap) 0;
   border-radius: inherit;
   box-shadow: var(--vz-frame);
   pointer-events: none;
@@ -694,8 +837,8 @@ a[aria-current="page"] {
 .main-topBar-background {
   background: rgba(15, 15, 15, 0.7) !important;
   background-color: rgba(15, 15, 15, 0.7) !important;
-  backdrop-filter: blur(16px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
 }
 
 .main-topBar-container,
@@ -707,8 +850,8 @@ html [data-vz-sticky] {
   background: rgba(15, 15, 15, 0.55) !important;
   background-color: rgba(15, 15, 15, 0.55) !important;
   background-image: none !important;
-  backdrop-filter: blur(16px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   box-shadow: none !important;
 }
 .main-topBar-container::before, .main-topBar-container::after,
@@ -724,7 +867,7 @@ html [data-vz-sticky] {
 :is(.view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img) {
   position: relative !important;
   border: none !important;
-  border-radius: 10px !important;
+  border-radius: var(--vz-radius) !important;
   background-color: transparent !important;
   transition: background-color .3s ease, box-shadow .3s ease !important;
 }
@@ -742,7 +885,7 @@ html [data-vz-sticky] {
 }
 /* recents tiles that theme.js finds by layout, in case spotify's class names don't match */
 [data-vz-tile] {
-  border-radius: 10px !important;
+  border-radius: var(--vz-radius) !important;
   overflow: hidden !important;
   background: rgba(224, 234, 249, 0.04) !important;
   transition: box-shadow .25s ease, background .25s ease !important;
@@ -767,21 +910,84 @@ html[data-vz-hover="off"] [data-vz-tile]:hover { background: rgba(224, 234, 249,
   box-shadow: var(--vz-glass-shadow) !important;
 }
 
-:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img)::after {
+/* rotating hover outline: a bright arc travels around the border, color set in the settings panel */
+@property --vz-ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes vz-ring-spin { to { --vz-ring-angle: 360deg; } }
+
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img)::after,
+[data-vz-tile]::after,
+.main-yourLibraryX-library [data-encore-id="listRow"]:has(img)::after,
+#Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img)::after,
+.main-trackList-trackListRow::after {
   content: '' !important;
   position: absolute !important;
   inset: 0 !important;
+  box-sizing: border-box !important;
+  padding: 1.5px !important;
   border-radius: inherit !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line))),
-    inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.35 * var(--vz-glow))) !important;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0.14) 0deg,
+    rgba(var(--vz-hover-rgb), 0.14) 170deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0.14) 360deg) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0) !important;
+  box-shadow: none !important;
   opacity: 0;
-  transition: opacity .3s ease !important;
+  transition: opacity .25s ease !important;
   pointer-events: none !important;
   z-index: 5 !important;
 }
-:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img):hover::after {
-  opacity: 1 !important;
+.vz-winbtn::after,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: -1px !important;
+  box-sizing: border-box !important;
+  padding: 1.5px !important;
+  border-radius: inherit !important;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0.14) 0deg,
+    rgba(var(--vz-hover-rgb), 0.14) 170deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0.14) 360deg) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0) !important;
+  opacity: 0;
+  transition: opacity .25s ease !important;
+  pointer-events: none !important;
+}
+.vz-winbtn,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink) { position: relative !important; }
+[data-vz-tile],
+.main-yourLibraryX-library [data-encore-id="listRow"]:has(img),
+#Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img),
+.main-trackList-trackListRow { position: relative !important; }
+
+:is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img):hover::after,
+[data-vz-tile]:hover::after,
+.main-yourLibraryX-library [data-encore-id="listRow"]:has(img):hover::after,
+#Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img):hover::after,
+.main-trackList-trackListRow:hover::after,
+.vz-winbtn:hover::after,
+:is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink):hover::after {
+  opacity: var(--vz-ring-on, 1) !important;
+  animation: vz-ring-spin 2.2s linear infinite;
+}
+.vz-winbtn:disabled::after { opacity: 0 !important; animation: none; }
+.vz-set-ctl input.vz-ring-pick {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 :is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i])
@@ -797,7 +1003,7 @@ html[data-vz-hover="off"] [data-vz-tile]:hover { background: rgba(224, 234, 249,
   box-sizing: border-box !important;
   margin-inline: var(--vz-lib-left) var(--vz-lib-right) !important;
   width: calc(100% - var(--vz-lib-left) - var(--vz-lib-right)) !important;
-  border-radius: 8px !important;
+  border-radius: var(--vz-radius-sm) !important;
   transition: background-color .18s ease, box-shadow .25s ease !important;
 }
 .main-yourLibraryX-library [data-encore-id="listRow"]:has(img):hover,
@@ -808,7 +1014,7 @@ html[data-vz-hover="off"] [data-vz-tile]:hover { background: rgba(224, 234, 249,
 
 /* song rows */
 .main-trackList-trackListRow {
-  border-radius: 8px !important;
+  border-radius: var(--vz-radius-sm) !important;
   transition: background-color .18s ease, box-shadow .25s ease !important;
 }
 
@@ -870,7 +1076,7 @@ input[type="text"],
 input[type="search"] {
   background: var(--vz-surface) !important;
   border: 1px solid transparent !important;
-  border-radius: 10px !important;
+  border-radius: var(--vz-radius) !important;
   color: var(--spice-text) !important;
   transition: border-color .2s ease, box-shadow .2s ease !important;
 }
@@ -887,7 +1093,7 @@ input::placeholder { color: var(--vz-text-faint) !important; }
 .GlueDropdown {
   background: rgba(22, 22, 22, 0.92) !important;
   border: 1px solid var(--vz-hairline) !important;
-  border-radius: 10px !important;
+  border-radius: var(--vz-radius) !important;
   backdrop-filter: blur(16px) saturate(140%) !important;
   box-shadow:
     0 16px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3),
@@ -988,14 +1194,14 @@ form:has([data-testid="search-input"]) svg {
 :is(#global-nav-bar, .Root__globalNav) :is([role="dialog"], [role="listbox"]) {
   background: radial-gradient(120% 120% at 0% 0%, rgba(224, 234, 249, 0.08), rgba(224, 234, 249, 0.02) 45%, transparent 70%), rgba(16, 16, 18, 0.78) !important;
   border: 1px solid var(--vz-glass-border) !important;
-  border-radius: 16px !important;
+  border-radius: var(--vz-radius-lg) !important;
   padding: 6px !important;
   backdrop-filter: blur(22px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.55) !important;
   box-sizing: border-box !important;
   max-width: 100% !important;
-  clip-path: inset(0 round 16px) !important;
+  clip-path: inset(0 round var(--vz-radius-lg)) !important;
 }
 :is(#global-nav-bar, .Root__globalNav) :is([role="dialog"], [role="listbox"]) * {
   max-width: 100%;
@@ -1008,7 +1214,7 @@ form:has([data-testid="search-input"]) svg {
 }
 
 [role="listbox"] :is([role="option"], [role="row"]) {
-  border-radius: 8px !important;
+  border-radius: var(--vz-radius-sm) !important;
   transition: background-color .18s ease, box-shadow .2s ease !important;
 }
 [role="listbox"] :is([role="option"], [role="row"]):is(:hover, [aria-selected="true"], :focus-visible),
@@ -1024,7 +1230,7 @@ form:has([data-testid="search-input"]) svg {
 .GenericModal__wrapper {
   background: var(--vz-surface) !important;
   border: 1px solid var(--vz-hairline) !important;
-  border-radius: 10px !important;
+  border-radius: var(--vz-radius) !important;
   box-shadow:
     inset 1px 1px 0 0 rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-line))),
     inset 0 0 30px -18px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow))) !important;
@@ -1114,3 +1320,472 @@ h1, h2, h3,
 ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
 .os-scrollbar, [class*="scrollbar-track"], [class*="scrollbar-handle"] { display: none !important; }
 */
+/* dragging playlists in the library */
+html.vz-dragging, html.vz-dragging * { cursor: grabbing !important; user-select: none !important; -webkit-user-select: none !important; }
+[data-vz-dragsrc] { opacity: .4 !important; }
+.vz-dragghost {
+  position: absolute;
+  max-width: 220px;
+  padding: 6px 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border: 1px solid var(--vz-glass-border);
+  border-radius: 8px;
+  background: var(--vz-glass-bg);
+  backdrop-filter: blur(var(--vz-glass-blur));
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur));
+  box-shadow: var(--vz-glass-shadow);
+  color: var(--vz-text);
+  font: 500 13px 'inter', system-ui, sans-serif;
+  pointer-events: none;
+}
+.vz-droplane {
+  position: absolute;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--vz-spectral);
+  box-shadow: 0 0 10px var(--vz-spectral);
+  pointer-events: none;
+}
+/* settings panel: sticky top with the title, live preview and search */
+.vz-set-top {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin: 0 -22px 4px;
+  padding: 18px 22px 14px;
+  background: rgba(16, 16, 18, 0.86);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.vz-set-titles { display: flex; flex-direction: column; gap: 2px; }
+.vz-set-titles span { font-size: 12px; color: var(--vz-text-faint); }
+.vz-prev {
+  margin: 12px 0;
+  padding: 8px;
+  border-radius: var(--vz-radius);
+  background: var(--vz-panel-glass);
+  box-shadow: var(--vz-inner-shadow), inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.30 * var(--vz-line))), inset 0 0 28px -16px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-glow)));
+}
+.vz-prev-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: var(--vz-radius-sm);
+  transition: background-color .18s ease, box-shadow .25s ease;
+}
+.vz-prev-row:hover {
+  background: var(--vz-glass-bg);
+  box-shadow: inset 0 0 0 1px var(--vz-glass-border), var(--vz-glass-shadow);
+}
+html[data-vz-hover="solid"] .vz-prev-row:hover { background: var(--vz-surface); }
+html[data-vz-hover="off"] .vz-prev-row:hover { background: transparent; box-shadow: none; }
+.vz-prev-row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0.14) 0deg,
+    rgba(var(--vz-hover-rgb), 0.14) 170deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0.14) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+.vz-prev-row:hover::after {
+  opacity: var(--vz-ring-on, 1);
+  animation: vz-ring-spin 2.2s linear infinite;
+}
+.vz-prev-cover {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgb(var(--vz-accent-rgb)), rgba(var(--vz-accent-rgb), 0.2));
+  box-shadow: 0 0 calc(18px * var(--vz-glow)) -4px rgba(var(--vz-accent-rgb), 0.6);
+}
+.vz-prev-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; font-size: 13px; }
+.vz-prev-text b { font-weight: 600; color: var(--vz-text); }
+.vz-prev-text span { font-size: 12px; color: var(--vz-text-faint); }
+.vz-prev-btn { cursor: default; }
+.vz-prev-btn svg { width: 12px !important; height: 12px !important; fill: currentcolor; }
+.vz-prev-bar { height: 4px; margin: 8px 8px 4px; border-radius: 999px; background: rgba(224, 234, 249, 0.1); overflow: hidden; }
+.vz-prev-bar i {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--vz-spectral-dim), var(--vz-spectral));
+  box-shadow: 0 0 10px var(--vz-spectral-dim);
+}
+
+.vz-set-searchbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--vz-glass-border);
+  background: rgba(20, 20, 22, 0.6);
+  color: var(--vz-text-faint);
+  cursor: text;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.vz-set-searchbox:focus-within {
+  border-color: rgba(var(--vz-accent-rgb), 0.6);
+  box-shadow: 0 0 16px -6px var(--vz-spectral-dim);
+}
+.vz-set-searchbox svg { width: 15px; height: 15px; flex-shrink: 0; }
+.vz-settings input.vz-set-search {
+  flex: 1;
+  min-width: 0;
+  height: 100% !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--vz-text) !important;
+  font: 13px 'inter', system-ui, sans-serif;
+}
+
+/* settings sections: icon chip, title, chevron. open / close height is animated by theme.js */
+.vz-set-section { border-top: 1px solid var(--vz-hairline); }
+.vz-set-sechead {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  color: var(--vz-text);
+  font: 600 13px 'space grotesk', system-ui, sans-serif;
+  letter-spacing: .01em;
+  text-align: left;
+  cursor: pointer;
+}
+.vz-set-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(var(--vz-accent-rgb), 0.12);
+  color: var(--vz-spectral);
+  box-shadow: inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc(0.25 * var(--vz-line)));
+}
+.vz-set-icon svg { width: 14px; height: 14px; }
+.vz-set-title { flex: 1; transition: color .2s ease; }
+.vz-set-sechead:hover .vz-set-title { color: var(--vz-spectral); }
+.vz-set-chev { width: 14px; height: 14px; color: var(--vz-text-faint); transition: transform .25s ease; }
+.vz-set-section[data-open] .vz-set-chev { transform: rotate(180deg); }
+.vz-set-secwrap { height: 0; overflow: hidden; }
+.vz-set-section[data-open] .vz-set-secwrap { height: auto; }
+.vz-set-secbody { padding-bottom: 6px; }
+.vz-set-secbody > :first-child { border-top: none; }
+.vz-set-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.vz-set-label small { font-size: 11px; line-height: 1.35; color: var(--vz-text-faint); }
+.vz-set-empty { padding: 28px 0 10px; text-align: center; font-size: 13px; color: var(--vz-text-faint); }
+
+/* presets */
+.vz-presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 2px 0 12px; }
+.vz-preset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: var(--vz-radius-sm);
+  border: 1px solid var(--vz-glass-border);
+  background: rgba(20, 20, 22, 0.5);
+  color: var(--vz-text-muted);
+  font: 500 12px 'inter', system-ui, sans-serif;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+.vz-preset i { width: 14px; height: 14px; flex-shrink: 0; border-radius: 50%; box-shadow: 0 0 0 1px var(--vz-hairline); }
+.vz-preset:hover {
+  color: var(--vz-text);
+  border-color: rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line)));
+  box-shadow: 0 0 16px -6px var(--vz-spectral-dim);
+}
+.vz-preset[aria-pressed="true"] {
+  color: var(--vz-text);
+  border-color: rgba(var(--vz-accent-rgb), 0.6);
+  background: rgba(var(--vz-accent-rgb), 0.16);
+}
+.vz-settings input.vz-set-code {
+  width: 130px;
+  height: 26px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  background: rgba(20, 20, 22, 0.6) !important;
+  box-shadow: none !important;
+  color: var(--vz-text) !important;
+  font: 11px 'jetbrains mono', monospace;
+}
+
+/* ---- outline toggles (set from the settings panel) ---- */
+[data-vz-panel][data-vz-nooutline] { box-shadow: var(--vz-inner-shadow) !important; }
+html[data-vz-nool-player] [data-vz-player]::after,
+html[data-vz-nool-player] .vz-frame-player { display: none !important; }
+html[data-vz-nool-top] [data-vz-topbar]::after { display: none !important; }
+html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; box-shadow: var(--vz-inner-shadow) !important; }
+
+/* ---- popups: right click menus, dropdowns, modals and tooltips get the same glass, radius, outline and glow ---- */
+:root {
+  --vz-popup-bg: radial-gradient(120% 120% at 0% 0%, rgba(224, 234, 249, 0.08), rgba(224, 234, 249, 0.02) 45%, transparent 70%), rgba(16, 16, 18, calc(0.3 + var(--vz-glass-tint) * 0.7));
+}
+:is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"]:not(.main-contextMenu-menu *, .vz-settings *)) {
+  background: var(--vz-popup-bg) !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  border-radius: var(--vz-radius) !important;
+  backdrop-filter: blur(22px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 36px -18px rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-glow))),
+    0 0 22px -10px rgba(var(--vz-accent-rgb), calc(0.4 * var(--vz-glow))),
+    0 18px 44px rgba(0, 0, 0, 0.55) !important;
+  isolation: isolate;
+}
+/* a menu nested inside another menu element stays flat so there is only one outline */
+.main-contextMenu-menu [role="menu"],
+[role="menu"] .main-contextMenu-menu {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-vz-nool-menus] :is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"], [role="listbox"]:has([role="option"])) {
+  border-color: transparent !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* menu items: same glass hover and rotating outline as the song rows */
+:is(.main-contextMenu-menuItemButton, [role="menuitem"]) {
+  position: relative !important;
+  border-radius: var(--vz-radius-sm) !important;
+  transition: background-color .18s ease, box-shadow .25s ease !important;
+}
+.main-contextMenu-menuItem:hover { background: transparent !important; }
+:is(.main-contextMenu-menuItemButton, [role="menuitem"]):is(:hover, :focus-visible, [aria-expanded="true"]) {
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: inset 0 0 0 1px var(--vz-glass-border), var(--vz-glass-shadow) !important;
+  color: var(--spice-text) !important;
+}
+html[data-vz-hover="solid"] :is(.main-contextMenu-menuItemButton, [role="menuitem"]):is(:hover, :focus-visible) {
+  background: var(--vz-surface) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-vz-hover="off"] :is(.main-contextMenu-menuItemButton, [role="menuitem"]):is(:hover, :focus-visible) {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+:is(.main-contextMenu-menuItemButton, [role="menuitem"])::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+  padding: 1.5px !important;
+  border-radius: inherit !important;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0.14) 0deg,
+    rgba(var(--vz-hover-rgb), 0.14) 170deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0.14) 360deg) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0) !important;
+  opacity: 0;
+  transition: opacity .25s ease !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+:is(.main-contextMenu-menuItemButton, [role="menuitem"]):hover::after {
+  opacity: var(--vz-ring-on, 1) !important;
+  animation: vz-ring-spin 2.2s linear infinite;
+}
+
+/* pull the player bar up so the gap above its outline matches the gap between the other boxes.
+   change --vz-bar-pull (default: the outline inset) to tighten or loosen it */
+:root { --vz-bar-pull: var(--vz-gap); --vz-bar-padding: 8px; }
+html:not([data-vz-pfree]) [data-vz-player] { margin-top: calc(var(--vz-bar-pull) * -1) !important; }
+
+/* only when the bar is resized by the user: let spotify's own layout fill it so its columns stay centered */
+[data-vz-player][data-vz-barsized] > * { height: 100% !important; }
+
+/* player bar buttons: same round glass buttons as back, forward and home (the white play button stays as is) */
+:root { --vz-bar-btn: 32px; }
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *) {
+  position: relative !important;
+  width: var(--vz-bar-btn) !important;
+  min-width: var(--vz-bar-btn) !important;
+  height: var(--vz-bar-btn) !important;
+  min-height: var(--vz-bar-btn) !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  border: 1px solid var(--vz-glass-border) !important;
+  background: var(--vz-glass-bg) !important;
+  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  box-shadow: var(--vz-glass-shadow) !important;
+  color: var(--vz-text-muted) !important;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .1s ease !important;
+}
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *) svg { fill: currentcolor !important; }
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):not(:disabled):hover {
+  color: var(--vz-text) !important;
+  border-color: rgba(var(--vz-accent-rgb), calc(0.55 * var(--vz-line))) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 16px -4px var(--vz-spectral-dim) !important;
+}
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):not(:disabled):active { transform: scale(.94); }
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):disabled { opacity: .45 !important; }
+/* shuffle / repeat when switched on */
+:is([data-vz-player], .Root__now-playing-bar) button:is([aria-checked="true"], [aria-pressed="true"], .control-button--active, .control-button--active-dot):not([data-testid="control-button-playpause"]) {
+  color: var(--vz-spectral) !important;
+  border-color: rgba(var(--vz-accent-rgb), calc(0.6 * var(--vz-line))) !important;
+}
+/* the rotating hover outline, same as the other buttons */
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *)::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: -1px !important;
+  box-sizing: border-box !important;
+  padding: 1.5px !important;
+  border-radius: inherit !important;
+  background: conic-gradient(from var(--vz-ring-angle),
+    rgba(var(--vz-hover-rgb), 0.14) 0deg,
+    rgba(var(--vz-hover-rgb), 0.14) 170deg,
+    rgba(var(--vz-hover-rgb), 1) 340deg,
+    rgba(var(--vz-hover-rgb), 0.14) 360deg) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0) !important;
+  opacity: 0;
+  transition: opacity .25s ease !important;
+  pointer-events: none !important;
+}
+:is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):not(:disabled):hover::after {
+  opacity: var(--vz-ring-on, 1) !important;
+  animation: vz-ring-spin 2.2s linear infinite;
+}
+
+/* smooth hide / show of the sidebars (theme.js adds this class for a moment around each toggle) */
+.vz-anim-grid {
+  transition: grid-template-columns .3s cubic-bezier(.4, 0, .2, 1) !important;
+}
+.vz-anim-grid > #main-view,
+.vz-anim-grid > * {
+  transition: margin-left .3s cubic-bezier(.4, 0, .2, 1), margin-right .3s cubic-bezier(.4, 0, .2, 1) !important;
+}
+
+/* song rows are never tiles (belt and braces, theme.js also un-tags them) */
+:is(.main-trackList-trackListRow, [data-testid="tracklist-row"], [role="row"]) [data-vz-tile] {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
+}
+:is(.main-trackList-trackListRow, [data-testid="tracklist-row"], [role="row"]) [data-vz-tile]::after { display: none !important; }
+
+/* every divider line fades out at both ends, same as the scrollbars */
+:root {
+  --vz-fade-line: linear-gradient(to right, transparent, rgba(var(--vz-accent-rgb), .38) 18%, rgba(var(--vz-accent-rgb), .38) 82%, transparent);
+}
+.main-trackList-trackListHeader,
+.main-trackList-trackListHeaderRow,
+[data-testid="tracklist-header"],
+[role="row"]:has(> [role="columnheader"]),
+.marketplace-header {
+  border-bottom-color: transparent !important;
+  border-image: var(--vz-fade-line) 1 !important;
+}
+.vz-set-row,
+.vz-set-section,
+.vz-set-sub {
+  border-top-color: transparent;
+  border-image: var(--vz-fade-line) 1;
+}
+.vz-set-secbody > :first-child,
+.vz-set-sub + .vz-set-row { border-image: none; }
+/* player bar pulses on the beat, theme.js animates --vz-beat from 1 to 0 on each beat */
+@property --vz-beat {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+html[data-vz-pulse] [data-vz-player]::after {
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--vz-accent-rgb), calc((0.30 + 0.5 * var(--vz-beat)) * var(--vz-line))),
+    inset 0 0 calc(28px + 34px * var(--vz-beat)) -16px rgba(var(--vz-accent-rgb), calc((0.25 + 0.55 * var(--vz-beat)) * var(--vz-glow)));
+}
+html[data-vz-pulse] .vz-frame-player {
+  box-shadow:
+    inset 0 0 calc(28px + 34px * var(--vz-beat)) -16px rgba(var(--vz-accent-rgb), calc((0.25 + 0.55 * var(--vz-beat)) * var(--vz-glow))),
+    0 0 calc(22px * var(--vz-beat)) -6px rgba(var(--vz-accent-rgb), calc(0.6 * var(--vz-beat) * var(--vz-glow)));
+}
+html[data-vz-pulse] [data-vz-player] :is(.playback-bar .progress-bar__fg, .playback-progressbar__fg) {
+  box-shadow: 0 0 calc(10px + 18px * var(--vz-beat)) rgba(var(--vz-accent-rgb), calc(0.35 + 0.5 * var(--vz-beat))) !important;
+}
+
+/* performance mode: no blur anywhere and nothing animating on the outlines (the #vz-nope bit just wins over every other rule) */
+html[data-vz-lite] :not(#vz-nope),
+html[data-vz-lite] :not(#vz-nope)::before,
+html[data-vz-lite] :not(#vz-nope)::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-vz-lite] :not(#vz-nope)::after { animation: none !important; }
+
+/* spotlight hover outline: the edge lights up where the cursor is (theme.js sets --vz-mx / --vz-my) */
+html[data-vz-outline="spotlight"] :is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img)::after,
+html[data-vz-outline="spotlight"] [data-vz-tile]::after,
+html[data-vz-outline="spotlight"] .main-yourLibraryX-library [data-encore-id="listRow"]:has(img)::after,
+html[data-vz-outline="spotlight"] #Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img)::after,
+html[data-vz-outline="spotlight"] .main-trackList-trackListRow::after,
+html[data-vz-outline="spotlight"] .vz-winbtn::after,
+html[data-vz-outline="spotlight"] :is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink)::after,
+html[data-vz-outline="spotlight"] .vz-prev-row::after,
+html[data-vz-outline="spotlight"] :is(.main-contextMenu-menuItemButton, [role="menuitem"])::after,
+html[data-vz-outline="spotlight"] :is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *)::after {
+  background: radial-gradient(var(--vz-spot-size, 180px) circle at var(--vz-mx, 50%) var(--vz-my, 50%),
+    rgba(var(--vz-hover-rgb), 1),
+    rgba(var(--vz-hover-rgb), 0.38) 40%,
+    rgba(var(--vz-hover-rgb), 0.1) 80%) !important;
+}
+html[data-vz-outline="spotlight"] :is(.main-card-card, [data-encore-id="card"], .view-homeShortcutsGrid-shortcut, [class*="homeShortcutsGrid-grid"] > *, [data-testid*="shortcut" i]):has(img):hover::after,
+html[data-vz-outline="spotlight"] [data-vz-tile]:hover::after,
+html[data-vz-outline="spotlight"] .main-yourLibraryX-library [data-encore-id="listRow"]:has(img):hover::after,
+html[data-vz-outline="spotlight"] #Desktop_LeftSidebar_Id [data-encore-id="listRow"]:has(img):hover::after,
+html[data-vz-outline="spotlight"] .main-trackList-trackListRow:hover::after,
+html[data-vz-outline="spotlight"] .vz-winbtn:hover::after,
+html[data-vz-outline="spotlight"] :is(.Root__globalNav, header) :is(button[aria-label="Go back"], button[aria-label="Go forward"], [data-testid="top-bar-back-button"], [data-testid="top-bar-forward-button"], button[aria-label="Home"], [data-testid="home-button"], .custom-navlink):hover::after,
+html[data-vz-outline="spotlight"] .vz-prev-row:hover::after,
+html[data-vz-outline="spotlight"] :is(.main-contextMenu-menuItemButton, [role="menuitem"]):hover::after,
+html[data-vz-outline="spotlight"] :is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):not(:disabled):hover::after {
+  animation: none !important;
+}
