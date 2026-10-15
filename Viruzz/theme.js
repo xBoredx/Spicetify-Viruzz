@@ -1636,7 +1636,7 @@
           }
         }
         let tilt = '';
-        if (deg && el === over) {
+        if (deg && el === over && !el.hasAttribute('data-vz-popup')) {
           const nx = Math.max(-1, Math.min(1, (px - b.left - b.width / 2) / (b.width / 2)));
           const ny = Math.max(-1, Math.min(1, (py - b.top - b.height / 2) / (b.height / 2)));
           tilt = ' perspective(2400px) rotateX(' + (-ny * deg).toFixed(2) + 'deg) rotateY(' + (nx * deg).toFixed(2) + 'deg)';
@@ -2570,6 +2570,26 @@
     const queuesweep = () => { fullpending = true; clearTimeout(sweeptimer); sweeptimer = setTimeout(sweep, 250); };
     const ours = '.vz-frame-layer, .vz-grip-layer, .vz-shape-field, #viruzz-bg-canvas, .vz-winbtns, .vz-settings-overlay';
     const isours = (n) => n === framelayer || (n.closest && n.closest(ours));
+
+    // spotify draws some menus (the ... share menu etc) inside the player bar or a panel, where our
+    // clipping and blur trap them. while one is open that box lets it out
+    const popsel = '[data-tippy-root], .tippy-box, [role="menu"], [data-popper-placement], #context-menu';
+    let popqueued = false;
+    function syncpopups() {
+      popqueued = false;
+      document.querySelectorAll('[data-vz-panel], [data-vz-player]').forEach((h) => {
+        const open = !!h.querySelector(popsel);
+        if (open === h.hasAttribute('data-vz-popup')) return;
+        h.toggleAttribute('data-vz-popup', open);
+        if (open && h._vztilt) settilt(h, '');
+      });
+    }
+    new MutationObserver((records) => {
+      if (popqueued) return;
+      for (const r of records) {
+        if (r.addedNodes.length || r.removedNodes.length) { popqueued = true; requestAnimationFrame(syncpopups); return; }
+      }
+    }).observe(document.body, { childList: true, subtree: true });
 
     function startwatching() {
       maketabs();
