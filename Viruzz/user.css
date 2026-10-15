@@ -1551,7 +1551,6 @@ html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; 
   --vz-popup-bg: radial-gradient(120% 120% at 0% 0%, rgba(224, 234, 249, 0.08), rgba(224, 234, 249, 0.02) 45%, transparent 70%), rgba(16, 16, 18, calc(0.3 + var(--vz-glass-tint) * 0.7));
 }
 :is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"]:not(.main-contextMenu-menu *, .vz-settings *)) {
-  position: relative;
   background: transparent !important;
   border: 1px solid var(--vz-glass-border) !important;
   border-radius: var(--vz-radius) !important;
@@ -1565,7 +1564,8 @@ html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; 
     0 18px 44px rgba(0, 0, 0, 0.55) !important;
   isolation: isolate;
 }
-/* the menu glass, on a layer behind the items so submenus can still pop out beside the menu */
+/* the menu glass, on a layer behind the items. the menu itself stays unpositioned so spotify's
+   submenus (share etc) still open beside it instead of inside it */
 :is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"]:not(.main-contextMenu-menu *, .vz-settings *))::before {
   content: '';
   position: absolute;
