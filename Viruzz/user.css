@@ -1563,9 +1563,10 @@ html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; 
     0 18px 44px rgba(0, 0, 0, 0.55) !important;
   isolation: isolate;
 }
-/* a menu nested inside another menu element stays flat so there is only one outline */
-.main-contextMenu-menu [role="menu"],
-[role="menu"] .main-contextMenu-menu {
+/* a menu wrapped directly in another menu element stays flat so there is only one outline.
+   submenus like share sit further down and keep their own glass */
+.main-contextMenu-menu > [role="menu"],
+[role="menu"] > .main-contextMenu-menu {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -1788,4 +1789,15 @@ html[data-vz-outline="spotlight"] .vz-prev-row:hover::after,
 html[data-vz-outline="spotlight"] :is(.main-contextMenu-menuItemButton, [role="menuitem"]):hover::after,
 html[data-vz-outline="spotlight"] :is([data-vz-player], .Root__now-playing-bar) button:not([data-testid="control-button-playpause"]):not([data-testid="volume-bar"] *):not([data-testid="playback-progressbar"] *):not(:disabled):hover::after {
   animation: none !important;
+}
+
+/* a box with a spotify menu open inside it (theme.js sets data-vz-popup): no clipping, blur or
+   stacking trap, so the menu can show on top of everything */
+:is([data-vz-panel], [data-vz-player])[data-vz-popup][data-vz-popup] {
+  overflow: visible !important;
+  contain: none !important;
+  isolation: auto !important;
+  z-index: 80 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
