@@ -1551,11 +1551,13 @@ html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; 
   --vz-popup-bg: radial-gradient(120% 120% at 0% 0%, rgba(224, 234, 249, 0.08), rgba(224, 234, 249, 0.02) 45%, transparent 70%), rgba(16, 16, 18, calc(0.3 + var(--vz-glass-tint) * 0.7));
 }
 :is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"]:not(.main-contextMenu-menu *, .vz-settings *)) {
-  background: var(--vz-popup-bg) !important;
+  position: relative;
+  background: transparent !important;
   border: 1px solid var(--vz-glass-border) !important;
   border-radius: var(--vz-radius) !important;
-  backdrop-filter: blur(22px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(150%) !important;
+  /* no blur on the menu itself, it would trap submenus like share inside it. the glass lives on ::before */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 0 36px -18px rgba(var(--vz-accent-rgb), calc(0.28 * var(--vz-glow))),
@@ -1563,6 +1565,21 @@ html[data-vz-nool-right] .vz-rightstrip { border-color: transparent !important; 
     0 18px 44px rgba(0, 0, 0, 0.55) !important;
   isolation: isolate;
 }
+/* the menu glass, on a layer behind the items so submenus can still pop out beside the menu */
+:is(.main-contextMenu-menu, .GlueDropdown, .GenericModal__wrapper, [role="tooltip"], [role="menu"]:not(.main-contextMenu-menu *, .vz-settings *))::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--vz-popup-bg);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  pointer-events: none;
+}
+.main-contextMenu-menu > [role="menu"]::before,
+[role="menu"] > .main-contextMenu-menu::before { display: none; }
+
 /* a menu wrapped directly in another menu element stays flat so there is only one outline.
    submenus like share sit further down and keep their own glass */
 .main-contextMenu-menu > [role="menu"],
@@ -1587,8 +1604,8 @@ html[data-vz-nool-menus] :is(.main-contextMenu-menu, .GlueDropdown, .GenericModa
 .main-contextMenu-menuItem:hover { background: transparent !important; }
 :is(.main-contextMenu-menuItemButton, [role="menuitem"]):is(:hover, :focus-visible, [aria-expanded="true"]) {
   background: var(--vz-glass-bg) !important;
-  backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(var(--vz-glass-blur)) saturate(140%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   box-shadow: inset 0 0 0 1px var(--vz-glass-border), var(--vz-glass-shadow) !important;
   color: var(--spice-text) !important;
 }
